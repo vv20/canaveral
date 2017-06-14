@@ -1,8 +1,12 @@
 #include <QVBoxLayout>
+#include <QVector>
+#include <QTextStream>
 #include "samples_tab.h"
 #include "constants.h"
+#include "pad.h"
 
-SamplesTab::SamplesTab (QWidget* parent) : QWidget(parent) {
+SamplesTab::SamplesTab (QVector<Pad*> pads, QWidget* parent) : QWidget(parent) {
+  QTextStream out (stdout);
   QVBoxLayout* vbox = new QVBoxLayout(this);
   QHBoxLayout* hbox = new QHBoxLayout();
 
@@ -10,7 +14,12 @@ SamplesTab::SamplesTab (QWidget* parent) : QWidget(parent) {
  
   QString s; 
   for (int i = 0; i < NUMBER_OF_BUTTONS; i++) {
-    lw->addItem(s.setNum(i+1) + ": ---");
+    out << "drawing sample " << QString::number(i) << endl;
+    s.append(QString::number(i+1));
+    s.append(": ");
+    s.append(pads.at(i)->getSample());
+    lw->addItem(s);
+    s.clear();
   }
 
   uploadBtn = new QPushButton("Load", this);

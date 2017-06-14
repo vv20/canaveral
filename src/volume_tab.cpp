@@ -1,10 +1,12 @@
 #include <QGridLayout>
 #include <QSlider>
 #include <QLabel>
+#include <QVector>
 #include "volume_tab.h"
 #include "constants.h"
+#include "pad.h"
 
-VolumeTab::VolumeTab (QWidget* parent) : QWidget(parent) {
+VolumeTab::VolumeTab (QVector<Pad*> pads, QWidget* parent) : QWidget(parent) {
   QGridLayout* grid = new QGridLayout(this);
 
   QString s;
@@ -12,8 +14,8 @@ VolumeTab::VolumeTab (QWidget* parent) : QWidget(parent) {
     QLabel* label = new QLabel(s.setNum(i+1), this);
     grid->addWidget(label, 0, i);
 
-    QSlider* slider = new QSlider(Qt::Vertical, this);
-    grid->addWidget(slider, 1, i, 1, 3);
+    pads.at(i)->createSlider(this);
+    grid->addWidget(pads.at(i)->getSlider(), 1, i, 1, 3);
   }
 
   setLayout(grid);

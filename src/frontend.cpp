@@ -1,21 +1,27 @@
 #include <QVBoxLayout>
 #include <QSplitter>
+#include <QVector>
+#include <QTextStream>
 #include "frontend.h"
 #include "volume_tab.h"
 #include "samples_tab.h"
 #include "buttons_tab.h"
 
-FrontEnd::FrontEnd (QWidget* parent) : QWidget(parent) {
+FrontEnd::FrontEnd (QVector<Pad*> pads, QWidget* parent) : QWidget(parent) {
+  QTextStream out(stdout);
   // the separator between the samples tab and the buttons tab
   QHBoxLayout* hbox = new QHBoxLayout(this);
 
-  SamplesTab* samples = new SamplesTab(this);
-  ButtonsTab* buttons = new ButtonsTab(this);
+  out << "initialising samples tab" << endl;
+  SamplesTab* samples = new SamplesTab(pads, this);
+  out << "initialising buttons tab" << endl;
+  ButtonsTab* buttons = new ButtonsTab(pads, this);
   QSplitter* splitter1 = new QSplitter(Qt::Horizontal, this);
   splitter1->addWidget(samples);
   splitter1->addWidget(buttons);
 
-  VolumeTab* volume = new VolumeTab(this);
+  out << "initialising volume tab" << endl;
+  VolumeTab* volume = new VolumeTab(pads, this);
 
   QSplitter* splitter2 = new QSplitter(Qt::Vertical, this);
   splitter2->addWidget(splitter1);

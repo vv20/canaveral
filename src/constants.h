@@ -9,3 +9,5 @@
 #define NUMBER_OF_BUTTONS (16)
 #define NUMBER_OF_BUTTON_ROWS (4)
 #define NUMBER_OF_BUTTON_COLUMNS (4)
+
+#define VOLUME_TICKS (10)

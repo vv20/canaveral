@@ -1,9 +1,11 @@
 #pragma	once
 
 #include <QWidget>
+#include <QVector>
+#include "pad.h"
 
 class VolumeTab : public QWidget {
   public:
-    VolumeTab (QWidget* parent = 0);
+    VolumeTab (QVector<Pad*> pads, QWidget* parent = 0);
 };
 
