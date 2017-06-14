@@ -1,6 +1,6 @@
 #pragma	once
 
-#define APP_WINDOW_TITLE "Launch Pads"
+#define APP_WINDOW_TITLE "Canaveral"
 #define APP_X_POS (100)
 #define APP_Y_POS (100)
 #define APP_HEIGHT (300)
