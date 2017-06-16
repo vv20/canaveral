@@ -12,6 +12,10 @@ class SamplesTab : public QWidget {
   public:
     SamplesTab (QVector<Pad*> pads, QWidget* parent = 0);
 
+  private slots:
+    void onLoad();
+    void onEject();
+
   private:
     QListWidget* lw;
     QPushButton* uploadBtn;

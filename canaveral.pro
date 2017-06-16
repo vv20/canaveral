@@ -17,11 +17,13 @@ HEADERS += src/backend.h \
            src/frontend.h \
            src/pad.h \
            src/samples_tab.h \
-           src/volume_tab.h
+           src/volume_tab.h \
+           src/select_window.h
 SOURCES += src/backend.cpp \
            src/buttons_tab.cpp \
            src/frontend.cpp \
            src/main.cpp \
            src/pad.cpp \
            src/samples_tab.cpp \
-           src/volume_tab.cpp
+           src/volume_tab.cpp \
+           src/select_window.cpp
