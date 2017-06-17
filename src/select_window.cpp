@@ -63,7 +63,7 @@ void SelectWindow::displayDir (QString dirName) {
   QFileInfoList fileList = dir.entryInfoList();
 
   out << "add the directories and wav files to the list" << endl;
-  QRegularExpression sampleRegEx("^.+$[.][w][a][v]");
+  QRegularExpression sampleRegEx("^.+[.][w][a][v]$");
   for (QFileInfo file : fileList) {
     if (file.isDir()) {
       dirList->addItem(file.fileName() + "/");
@@ -101,7 +101,7 @@ void SelectWindow::onBack () {
 }
 
 void SelectWindow::toggleSelect (QString curText) {  
-  QRegularExpression sampleRegEx("^.+$[.][w][a][v]");
+  QRegularExpression sampleRegEx("^.+[.][w][a][v]$");
   if (sampleRegEx.match(curText).hasMatch()) {
     selectBtn->setDisabled(false);
   }
