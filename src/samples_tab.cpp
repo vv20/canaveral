@@ -6,12 +6,15 @@
 #include "pad.h"
 #include "select_window.h"
 
-SamplesTab::SamplesTab (QVector<Pad*> pads, QWidget* parent) : QWidget(parent) {
+SamplesTab::SamplesTab (QVector<Pad*> padVector, QWidget* parent) : QWidget(parent) {
+  pads = padVector;
+
   QTextStream out (stdout);
   QVBoxLayout* vbox = new QVBoxLayout(this);
   QHBoxLayout* hbox = new QHBoxLayout();
 
   lw = new QListWidget(this);
+  connect(lw, &QListWidget::itemDoubleClicked, this, &SamplesTab::onLoad);
  
   QString s; 
   for (int i = 0; i < NUMBER_OF_BUTTONS; i++) {

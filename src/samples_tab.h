@@ -22,5 +22,6 @@ class SamplesTab : public QWidget {
     QPushButton* uploadBtn;
     QPushButton* ejectBtn;
 
+    QVector<Pad*> pads;
 };
 
