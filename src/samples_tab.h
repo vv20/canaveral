@@ -11,6 +11,7 @@ class SamplesTab : public QWidget {
 
   public:
     SamplesTab (QVector<Pad*> pads, QWidget* parent = 0);
+    void select(QString file);
 
   private slots:
     void onLoad();

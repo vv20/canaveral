@@ -38,14 +38,14 @@ SamplesTab::SamplesTab (QVector<Pad*> pads, QWidget* parent) : QWidget(parent) {
   setLayout(vbox);
 }
 
-void SamplesTab::onLoad () {
+void SamplesTab::select(QString file) {
   QTextStream out (stdout);
-  out << "loading a new sample" << endl;
-  SelectWindow* window = new SelectWindow();
+  out << "selecting file " << file << endl;
+}
+
+void SamplesTab::onLoad () {
+  SelectWindow* window = new SelectWindow(this);
   window->show();
-  out << "waiting for a file to be selected" << endl;
-//  QString selectedSample = window.getSelectedSample();
-//  out << "selected sample " << selectedSample << endl;
 }
 
 void SamplesTab::onEject () {

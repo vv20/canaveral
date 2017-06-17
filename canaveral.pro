@@ -9,6 +9,7 @@ DESTDIR = bin
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
 QT += widgets
+QT += core
 
 # Input
 HEADERS += src/backend.h \

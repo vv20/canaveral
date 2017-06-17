@@ -8,9 +8,13 @@
 #include <QFileInfo>
 #include <QRegularExpression>
 #include <QTextStream>
+#include <QThread>
 #include "select_window.h"
+#include "samples_tab.h"
 
-SelectWindow::SelectWindow (QWidget* parent) : QWidget(parent) {
+SelectWindow::SelectWindow (SamplesTab* tab, QWidget* parent) : QWidget(parent) {
+  parentTab = tab;
+
   QTextStream out (stdout);
 
   out << "initialise the elements of the window" << endl;
@@ -41,12 +45,6 @@ SelectWindow::SelectWindow (QWidget* parent) : QWidget(parent) {
   grid->addWidget(cancelBtn, 5, 0);
   grid->addWidget(selectBtn, 5, 4);
   setLayout(grid);
-
-  out << "prepare the result and mutex" << endl;
-  selectedFile = "";
-  selectedFileMutex = new QMutex();
-  selectedFileMutex->lock();
-  out << "yo" << endl;
 }
 
 void SelectWindow::displayDir (QString dirName) {
@@ -74,15 +72,11 @@ void SelectWindow::displayDir (QString dirName) {
 }
 
 void SelectWindow::onCancel () {
-  selectedFile = "";
-  selectedFileMutex->unlock();
   this->close();
 }
 
 void SelectWindow::onSelect () {
-  QString selected = dirList->currentItem()->text();
-  selectedFile = curDir->text() + selected;
-  selectedFileMutex->unlock();
+  parentTab->select(curDir->text() + dirList->currentItem()->text());
   this->close(); 
 }
 
@@ -101,11 +95,5 @@ void SelectWindow::onBack () {
 
 void SelectWindow::toggleSelect () {
 
-}
-
-QString SelectWindow::getSelectedSample () {
-  selectedFileMutex->lock();
-  delete selectedFileMutex;
-  return selectedFile;
 }
 

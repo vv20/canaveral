@@ -5,14 +5,13 @@
 #include <QListWidget>
 #include <QLineEdit>
 #include <QString>
-#include <QMutex>
+#include "samples_tab.h"
 
 class SelectWindow : public QWidget {
   Q_OBJECT
 
   public:
-    SelectWindow (QWidget* parent = 0);
-    QString getSelectedSample();
+    SelectWindow (SamplesTab* tab, QWidget* parent = 0);
   
   private slots:
     void onCancel();
@@ -29,7 +28,5 @@ class SelectWindow : public QWidget {
     QLineEdit* curDir;
     QListWidget* dirList;
 
-    QString selectedFile;
-    QMutex* selectedFileMutex;
+    SamplesTab* parentTab;
 };
-

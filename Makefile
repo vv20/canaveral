@@ -939,6 +939,7 @@ compiler_moc_header_clean:
 		/usr/local/qt5/include/QtGui/qpen.h \
 		/usr/local/qt5/include/QtGui/qtextoption.h \
 		/usr/local/qt5/include/QtCore/QString \
+		/usr/local/qt5/include/QtCore/QMutex \
 		src/select_window.h \
 		/usr/local/qt5/bin/moc
 	/usr/local/qt5/bin/moc $(DEFINES) -I/usr/local/qt5/mkspecs/linux-g++ -I/home/victor/Documents/canaveral -I/home/victor/Documents/canaveral -I/usr/local/qt5/include -I/usr/local/qt5/include/QtWidgets -I/usr/local/qt5/include/QtGui -I/usr/local/qt5/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/select_window.h -o .moc/moc_select_window.cpp
@@ -1574,7 +1575,16 @@ compiler_clean: compiler_moc_header_clean
 		src/pad.h \
 		/usr/local/qt5/include/QtWidgets/QSlider \
 		src/backend.h \
-		src/constants.h
+		src/constants.h \
+		src/select_window.h \
+		/usr/local/qt5/include/QtWidgets/QLineEdit \
+		/usr/local/qt5/include/QtWidgets/qlineedit.h \
+		/usr/local/qt5/include/QtGui/qtextcursor.h \
+		/usr/local/qt5/include/QtGui/qtextformat.h \
+		/usr/local/qt5/include/QtGui/qpen.h \
+		/usr/local/qt5/include/QtGui/qtextoption.h \
+		/usr/local/qt5/include/QtCore/QString \
+		/usr/local/qt5/include/QtCore/QMutex
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/samples_tab.o src/samples_tab.cpp
 
 .obj/volume_tab.o: src/volume_tab.cpp /usr/local/qt5/include/QtWidgets/QGridLayout \
@@ -1833,7 +1843,9 @@ compiler_clean: compiler_moc_header_clean
 		/usr/local/qt5/include/QtWidgets/qboxlayout.h \
 		/usr/local/qt5/include/QtCore/QFileInfo \
 		/usr/local/qt5/include/QtCore/QRegularExpression \
-		src/select_window.h
+		/usr/local/qt5/include/QtCore/QTextStream \
+		src/select_window.h \
+		/usr/local/qt5/include/QtCore/QMutex
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/select_window.o src/select_window.cpp
 
 .obj/moc_pad.o: .moc/moc_pad.cpp 
