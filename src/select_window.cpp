@@ -8,7 +8,6 @@
 #include <QFileInfo>
 #include <QRegularExpression>
 #include <QTextStream>
-#include <QThread>
 #include "select_window.h"
 #include "samples_tab.h"
 
@@ -93,7 +92,13 @@ void SelectWindow::onBack () {
   displayDir(newCur);
 }
 
-void SelectWindow::toggleSelect () {
-
+void SelectWindow::toggleSelect (QString curText) {  
+  QRegularExpression sampleRegEx("^.+$[.][w][a][v]");
+  if (sampleRegEx.match(curText).hasMatch()) {
+    selectBtn->setDisabled(false);
+  }
+  else {
+    selectBtn->setDisabled(true);
+  }
 }
 

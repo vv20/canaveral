@@ -17,7 +17,7 @@ class SelectWindow : public QWidget {
     void onCancel();
     void onSelect();
     void onBack();
-    void toggleSelect();
+    void toggleSelect(QString curText);
 
   private:
     void displayDir(QString dirName);
