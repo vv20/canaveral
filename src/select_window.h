@@ -18,8 +18,13 @@ class SelectWindow : public QWidget {
     void onSelect();
     void onBack();
     void toggleSelect(QString curText);
+    void onDoubleClick(QListWidgetItem* item);
 
   private:
+    /**
+     * Displays the list of contents of the directory on the list widget.
+     * dirName must be the absolute path of the directory.
+     */
     void displayDir(QString dirName);
 
     QPushButton* backBtn;

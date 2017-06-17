@@ -27,6 +27,10 @@ SelectWindow::SelectWindow (SamplesTab* tab, QWidget* parent) : QWidget(parent) 
   connect(dirList, &QListWidget::currentTextChanged, 
       this, &SelectWindow::toggleSelect);
 
+  out << "connect the double click event on the list widget to dir change" << endl;
+  connect(dirList, &QListWidget::itemDoubleClicked,
+      this, &SelectWindow::onDoubleClick);
+
   out << "connect the buttons to the slots" << endl;
   connect(backBtn, &QPushButton::clicked, this, &SelectWindow::onBack);
   connect(cancelBtn, &QPushButton::clicked, this, &SelectWindow::onCancel);
@@ -49,9 +53,10 @@ SelectWindow::SelectWindow (SamplesTab* tab, QWidget* parent) : QWidget(parent) 
 void SelectWindow::displayDir (QString dirName) {
   QTextStream out(stdout);
 
-  curDir->insert(dirName);
+  curDir->setText(dirName);
+  dirList->clear();
 
-  out << "open the directory" << endl;
+  out << "open the directory " << dirName << endl;
   QDir dir(dirName);
   dir.setFilter(QDir::Files | QDir::AllDirs);
   dir.setSorting(QDir::Name);
@@ -59,9 +64,9 @@ void SelectWindow::displayDir (QString dirName) {
 
   out << "add the directories and wav files to the list" << endl;
   QRegularExpression sampleRegEx("^.+$[.][w][a][v]");
-  for (QFileInfo file : fileList ) {
+  for (QFileInfo file : fileList) {
     if (file.isDir()) {
-      dirList->addItem(file.fileName());
+      dirList->addItem(file.fileName() + "/");
       continue;
     }
     if (sampleRegEx.match(file.fileName()).hasMatch()) {
@@ -100,5 +105,9 @@ void SelectWindow::toggleSelect (QString curText) {
   else {
     selectBtn->setDisabled(true);
   }
+}
+
+void SelectWindow::onDoubleClick (QListWidgetItem* item) {
+  displayDir(curDir->text() + item->text());
 }
 
