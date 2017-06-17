@@ -89,9 +89,12 @@ void SelectWindow::onBack () {
   QVector<QStringRef> split = current.splitRef("/");
   QString newCur;
 
-  for (QStringRef part : split) {
-    newCur.append(part);
-    newCur.append("/");
+  newCur.append("/");
+  for (int i = 0; i < split.size() - 2; i++) {
+    if (split.at(i).size() > 0) {
+      newCur.append(split.at(i));
+      newCur.append("/");
+    }
   }
 
   displayDir(newCur);
