@@ -7,7 +7,7 @@
 Pad::Pad (int pos, BackEnd* back) {
   position = pos;
   backend = back;
-  sample = new QString("---");
+  sample = "---";
 }
 
 QPushButton* Pad::getButton () {
@@ -18,12 +18,8 @@ QSlider* Pad::getSlider () {
   return slider;
 }
 
-QString* Pad::getSample () {
+QString Pad::getSample () {
   return sample;
-}
-
-void Pad::setSample (QString* sam) {
-  sample = sam;
 }
 
 void Pad::createButton (QWidget* parent) {
@@ -44,12 +40,12 @@ void Pad::setVolume (int volume) {
   volumeIndex = (float) (volume * 2 / VOLUME_TICKS);
 }
 
-void Pad::loadSample (QString* sam) { 
+void Pad::loadSample (QString sam) { 
   sample = sam;
 }
 
 void Pad::ejectSample () {
-  sample = new QString("---");
+  sample = "---";
 }
 
 void Pad::play () {

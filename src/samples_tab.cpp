@@ -42,8 +42,8 @@ SamplesTab::SamplesTab (QVector<Pad*> padVector, QWidget* parent) : QWidget(pare
 }
 
 void SamplesTab::select(QString file) {
-  QTextStream out (stdout);
-  out << "selecting file " << file << endl;
+  lw->currentItem()->setText(file);
+  pads.at(lw->currentRow())->loadSample(file);
 }
 
 void SamplesTab::onLoad () {

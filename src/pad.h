@@ -15,15 +15,14 @@ class Pad : public QObject {
     /* ====================  ACCESSORS     ======================================= */
     QPushButton* getButton();
     QSlider* getSlider();
-    QString* getSample();
+    QString getSample();
     /* ====================  MUTATORS      ======================================= */
-    void setSample(QString* sample);
     void createButton(QWidget* parent);
     void createSlider(QWidget* parent);
 
   public slots:
     void setVolume(int volume);
-    void loadSample(QString* sample);
+    void loadSample(QString sample);
     void ejectSample();
     void play();
     void playWithSustain();
@@ -34,7 +33,7 @@ class Pad : public QObject {
     float volumeIndex;
     QPushButton* button;
     QSlider* slider;
-    QString* sample;
+    QString sample;
     BackEnd* backend;
 };
 
