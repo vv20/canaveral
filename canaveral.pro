@@ -19,7 +19,8 @@ HEADERS += src/backend.h \
            src/pad.h \
            src/samples_tab.h \
            src/volume_tab.h \
-           src/select_window.h
+           src/select_window.h \
+           src/sample.h
 SOURCES += src/backend.cpp \
            src/buttons_tab.cpp \
            src/frontend.cpp \
@@ -27,4 +28,5 @@ SOURCES += src/backend.cpp \
            src/pad.cpp \
            src/samples_tab.cpp \
            src/volume_tab.cpp \
-           src/select_window.cpp
+           src/select_window.cpp \
+           src/sample.cpp

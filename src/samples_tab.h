@@ -23,5 +23,7 @@ class SamplesTab : public QWidget {
     QPushButton* ejectBtn;
 
     QVector<Pad*> pads;
+
+    void redrawList();
 };
 

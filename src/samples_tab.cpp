@@ -15,16 +15,8 @@ SamplesTab::SamplesTab (QVector<Pad*> padVector, QWidget* parent) : QWidget(pare
 
   lw = new QListWidget(this);
   connect(lw, &QListWidget::itemDoubleClicked, this, &SamplesTab::onLoad);
- 
-  QString s; 
-  for (int i = 0; i < NUMBER_OF_BUTTONS; i++) {
-    out << "drawing sample " << QString::number(i) << endl;
-    s.append(QString::number(i+1));
-    s.append(": ");
-    s.append(pads.at(i)->getSample());
-    lw->addItem(s);
-    s.clear();
-  }
+
+  redrawList();
 
   uploadBtn = new QPushButton("Load", this);
   ejectBtn = new QPushButton("Eject", this);
@@ -42,8 +34,9 @@ SamplesTab::SamplesTab (QVector<Pad*> padVector, QWidget* parent) : QWidget(pare
 }
 
 void SamplesTab::select(QString file) {
-  lw->currentItem()->setText(file);
+  QTextStream out (stdout);
   pads.at(lw->currentRow())->loadSample(file);
+  redrawList();
 }
 
 void SamplesTab::onLoad () {
@@ -52,6 +45,20 @@ void SamplesTab::onLoad () {
 }
 
 void SamplesTab::onEject () {
+  int row = lw->currentRow();
+  lw->currentItem()->setText(QString::number(row + 1) + ": ---");
+  pads.at(lw->currentRow())->ejectSample();
+}
 
+void SamplesTab::redrawList () {
+  lw->clear();
+  QString s; 
+  for (int i = 0; i < NUMBER_OF_BUTTONS; i++) {
+    s.append(QString::number(i+1));
+    s.append(": ");
+    s.append(pads.at(i)->getSample());
+    lw->addItem(s);
+    s.clear();
+  }
 }
 

@@ -55,7 +55,8 @@ SOURCES       = src/backend.cpp \
 		src/pad.cpp \
 		src/samples_tab.cpp \
 		src/volume_tab.cpp \
-		src/select_window.cpp .moc/moc_pad.cpp \
+		src/select_window.cpp \
+		src/sample.cpp .moc/moc_pad.cpp \
 		.moc/moc_samples_tab.cpp \
 		.moc/moc_select_window.cpp
 OBJECTS       = .obj/backend.o \
@@ -66,6 +67,7 @@ OBJECTS       = .obj/backend.o \
 		.obj/samples_tab.o \
 		.obj/volume_tab.o \
 		.obj/select_window.o \
+		.obj/sample.o \
 		.obj/moc_pad.o \
 		.obj/moc_samples_tab.o \
 		.obj/moc_select_window.o
@@ -218,14 +220,16 @@ DIST          = /usr/local/qt5/mkspecs/features/spec_pre.prf \
 		src/pad.h \
 		src/samples_tab.h \
 		src/volume_tab.h \
-		src/select_window.h src/backend.cpp \
+		src/select_window.h \
+		src/sample.h src/backend.cpp \
 		src/buttons_tab.cpp \
 		src/frontend.cpp \
 		src/main.cpp \
 		src/pad.cpp \
 		src/samples_tab.cpp \
 		src/volume_tab.cpp \
-		src/select_window.cpp
+		src/select_window.cpp \
+		src/sample.cpp
 QMAKE_TARGET  = canaveral
 DESTDIR       = bin/
 TARGET        = bin/canaveral
@@ -545,8 +549,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents src/backend.h src/buttons_tab.h src/constants.h src/frontend.h src/pad.h src/samples_tab.h src/volume_tab.h src/select_window.h $(DISTDIR)/
-	$(COPY_FILE) --parents src/backend.cpp src/buttons_tab.cpp src/frontend.cpp src/main.cpp src/pad.cpp src/samples_tab.cpp src/volume_tab.cpp src/select_window.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents src/backend.h src/buttons_tab.h src/constants.h src/frontend.h src/pad.h src/samples_tab.h src/volume_tab.h src/select_window.h src/sample.h $(DISTDIR)/
+	$(COPY_FILE) --parents src/backend.cpp src/buttons_tab.cpp src/frontend.cpp src/main.cpp src/pad.cpp src/samples_tab.cpp src/volume_tab.cpp src/select_window.cpp src/sample.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -680,6 +684,8 @@ compiler_moc_header_clean:
 		/usr/local/qt5/include/QtWidgets/qabstractslider.h \
 		/usr/local/qt5/include/QtWidgets/QWidget \
 		src/backend.h \
+		src/sample.h \
+		/usr/local/qt5/include/QtCore/QString \
 		src/pad.h \
 		/usr/local/qt5/bin/moc
 	/usr/local/qt5/bin/moc $(DEFINES) -I/usr/local/qt5/mkspecs/linux-g++ -I/home/victor/Documents/canaveral -I/home/victor/Documents/canaveral -I/usr/local/qt5/include -I/usr/local/qt5/include/QtWidgets -I/usr/local/qt5/include/QtGui -I/usr/local/qt5/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/pad.h -o .moc/moc_pad.cpp
@@ -808,6 +814,8 @@ compiler_moc_header_clean:
 		src/pad.h \
 		/usr/local/qt5/include/QtWidgets/QSlider \
 		src/backend.h \
+		src/sample.h \
+		/usr/local/qt5/include/QtCore/QString \
 		src/samples_tab.h \
 		/usr/local/qt5/bin/moc
 	/usr/local/qt5/bin/moc $(DEFINES) -I/usr/local/qt5/mkspecs/linux-g++ -I/home/victor/Documents/canaveral -I/home/victor/Documents/canaveral -I/usr/local/qt5/include -I/usr/local/qt5/include/QtWidgets -I/usr/local/qt5/include/QtGui -I/usr/local/qt5/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/samples_tab.h -o .moc/moc_samples_tab.cpp
@@ -939,7 +947,12 @@ compiler_moc_header_clean:
 		/usr/local/qt5/include/QtGui/qpen.h \
 		/usr/local/qt5/include/QtGui/qtextoption.h \
 		/usr/local/qt5/include/QtCore/QString \
-		/usr/local/qt5/include/QtCore/QMutex \
+		src/samples_tab.h \
+		/usr/local/qt5/include/QtCore/QVector \
+		src/pad.h \
+		/usr/local/qt5/include/QtWidgets/QSlider \
+		src/backend.h \
+		src/sample.h \
 		src/select_window.h \
 		/usr/local/qt5/bin/moc
 	/usr/local/qt5/bin/moc $(DEFINES) -I/usr/local/qt5/mkspecs/linux-g++ -I/home/victor/Documents/canaveral -I/home/victor/Documents/canaveral -I/usr/local/qt5/include -I/usr/local/qt5/include/QtWidgets -I/usr/local/qt5/include/QtGui -I/usr/local/qt5/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/select_window.h -o .moc/moc_select_window.cpp
@@ -1074,6 +1087,8 @@ compiler_clean: compiler_moc_header_clean
 		/usr/local/qt5/include/QtWidgets/qslider.h \
 		/usr/local/qt5/include/QtWidgets/qabstractslider.h \
 		src/backend.h \
+		src/sample.h \
+		/usr/local/qt5/include/QtCore/QString \
 		src/constants.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/buttons_tab.o src/buttons_tab.cpp
 
@@ -1194,6 +1209,8 @@ compiler_clean: compiler_moc_header_clean
 		/usr/local/qt5/include/QtWidgets/qslider.h \
 		/usr/local/qt5/include/QtWidgets/qabstractslider.h \
 		src/backend.h \
+		src/sample.h \
+		/usr/local/qt5/include/QtCore/QString \
 		src/volume_tab.h \
 		src/samples_tab.h \
 		/usr/local/qt5/include/QtWidgets/QListWidget \
@@ -1331,6 +1348,8 @@ compiler_clean: compiler_moc_header_clean
 		/usr/local/qt5/include/QtWidgets/qslider.h \
 		/usr/local/qt5/include/QtWidgets/qabstractslider.h \
 		src/backend.h \
+		src/sample.h \
+		/usr/local/qt5/include/QtCore/QString \
 		src/constants.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/main.o src/main.cpp
 
@@ -1441,6 +1460,8 @@ compiler_clean: compiler_moc_header_clean
 		src/pad.h \
 		/usr/local/qt5/include/QtWidgets/QWidget \
 		src/backend.h \
+		src/sample.h \
+		/usr/local/qt5/include/QtCore/QString \
 		src/constants.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/pad.o src/pad.cpp
 
@@ -1575,6 +1596,8 @@ compiler_clean: compiler_moc_header_clean
 		src/pad.h \
 		/usr/local/qt5/include/QtWidgets/QSlider \
 		src/backend.h \
+		src/sample.h \
+		/usr/local/qt5/include/QtCore/QString \
 		src/constants.h \
 		src/select_window.h \
 		/usr/local/qt5/include/QtWidgets/QLineEdit \
@@ -1582,9 +1605,7 @@ compiler_clean: compiler_moc_header_clean
 		/usr/local/qt5/include/QtGui/qtextcursor.h \
 		/usr/local/qt5/include/QtGui/qtextformat.h \
 		/usr/local/qt5/include/QtGui/qpen.h \
-		/usr/local/qt5/include/QtGui/qtextoption.h \
-		/usr/local/qt5/include/QtCore/QString \
-		/usr/local/qt5/include/QtCore/QMutex
+		/usr/local/qt5/include/QtGui/qtextoption.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/samples_tab.o src/samples_tab.cpp
 
 .obj/volume_tab.o: src/volume_tab.cpp /usr/local/qt5/include/QtWidgets/QGridLayout \
@@ -1703,6 +1724,8 @@ compiler_clean: compiler_moc_header_clean
 		/usr/local/qt5/include/QtWidgets/qabstractbutton.h \
 		/usr/local/qt5/include/QtGui/qicon.h \
 		src/backend.h \
+		src/sample.h \
+		/usr/local/qt5/include/QtCore/QString \
 		src/constants.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/volume_tab.o src/volume_tab.cpp
 
@@ -1845,8 +1868,58 @@ compiler_clean: compiler_moc_header_clean
 		/usr/local/qt5/include/QtCore/QRegularExpression \
 		/usr/local/qt5/include/QtCore/QTextStream \
 		src/select_window.h \
-		/usr/local/qt5/include/QtCore/QMutex
+		src/samples_tab.h \
+		/usr/local/qt5/include/QtCore/QVector \
+		src/pad.h \
+		/usr/local/qt5/include/QtWidgets/QSlider \
+		src/backend.h \
+		src/sample.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/select_window.o src/select_window.cpp
+
+.obj/sample.o: src/sample.cpp /usr/local/qt5/include/QtCore/QString \
+		/usr/local/qt5/include/QtCore/qstring.h \
+		/usr/local/qt5/include/QtCore/qchar.h \
+		/usr/local/qt5/include/QtCore/qglobal.h \
+		/usr/local/qt5/include/QtCore/qconfig.h \
+		/usr/local/qt5/include/QtCore/qfeatures.h \
+		/usr/local/qt5/include/QtCore/qsystemdetection.h \
+		/usr/local/qt5/include/QtCore/qprocessordetection.h \
+		/usr/local/qt5/include/QtCore/qcompilerdetection.h \
+		/usr/local/qt5/include/QtCore/qtypeinfo.h \
+		/usr/local/qt5/include/QtCore/qtypetraits.h \
+		/usr/local/qt5/include/QtCore/qisenum.h \
+		/usr/local/qt5/include/QtCore/qsysinfo.h \
+		/usr/local/qt5/include/QtCore/qlogging.h \
+		/usr/local/qt5/include/QtCore/qflags.h \
+		/usr/local/qt5/include/QtCore/qatomic.h \
+		/usr/local/qt5/include/QtCore/qbasicatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_bootstrap.h \
+		/usr/local/qt5/include/QtCore/qgenericatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_cxx11.h \
+		/usr/local/qt5/include/QtCore/qatomic_msvc.h \
+		/usr/local/qt5/include/QtCore/qglobalstatic.h \
+		/usr/local/qt5/include/QtCore/qmutex.h \
+		/usr/local/qt5/include/QtCore/qnumeric.h \
+		/usr/local/qt5/include/QtCore/qversiontagging.h \
+		/usr/local/qt5/include/QtCore/qbytearray.h \
+		/usr/local/qt5/include/QtCore/qrefcount.h \
+		/usr/local/qt5/include/QtCore/qnamespace.h \
+		/usr/local/qt5/include/QtCore/qarraydata.h \
+		/usr/local/qt5/include/QtCore/qstringbuilder.h \
+		/usr/local/qt5/include/QtCore/QVector \
+		/usr/local/qt5/include/QtCore/qvector.h \
+		/usr/local/qt5/include/QtCore/qalgorithms.h \
+		/usr/local/qt5/include/QtCore/qiterator.h \
+		/usr/local/qt5/include/QtCore/qlist.h \
+		/usr/local/qt5/include/QtCore/qhashfunctions.h \
+		/usr/local/qt5/include/QtCore/qpair.h \
+		/usr/local/qt5/include/QtCore/qbytearraylist.h \
+		/usr/local/qt5/include/QtCore/qstringlist.h \
+		/usr/local/qt5/include/QtCore/qregexp.h \
+		/usr/local/qt5/include/QtCore/qstringmatcher.h \
+		/usr/local/qt5/include/QtCore/qpoint.h \
+		src/sample.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/sample.o src/sample.cpp
 
 .obj/moc_pad.o: .moc/moc_pad.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/moc_pad.o .moc/moc_pad.cpp

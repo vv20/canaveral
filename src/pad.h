@@ -4,6 +4,7 @@
 #include <QSlider>
 #include <QWidget>
 #include "backend.h"
+#include "sample.h"
 
 class Pad : public QObject {
   Q_OBJECT
@@ -33,7 +34,7 @@ class Pad : public QObject {
     float volumeIndex;
     QPushButton* button;
     QSlider* slider;
-    QString sample;
+    Sample* sample;
     BackEnd* backend;
 };
 
