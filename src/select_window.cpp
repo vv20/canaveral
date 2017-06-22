@@ -7,40 +7,37 @@
 #include <QGridLayout>
 #include <QFileInfo>
 #include <QRegularExpression>
-#include <QTextStream>
 #include "select_window.h"
 #include "samples_tab.h"
 
 SelectWindow::SelectWindow (SamplesTab* tab, QWidget* parent) : QWidget(parent) {
   parentTab = tab;
 
-  QTextStream out (stdout);
-
-  out << "initialise the elements of the window" << endl;
+  // initialise the elements of the window
   backBtn = new QPushButton("<< Back", this);
   cancelBtn = new QPushButton("Cancel", this);
   selectBtn = new QPushButton("Select", this);
   curDir = new QLineEdit(this);
   dirList = new QListWidget(this);
 
-  out << "connect the list click event to the toggle of select button" << endl;
+  // connect the list click event to the toggle of select button
   connect(dirList, &QListWidget::currentTextChanged, 
       this, &SelectWindow::toggleSelect);
 
-  out << "connect the double click event on the list widget to dir change" << endl;
+  // connect the double click event on the list widget to dir change
   connect(dirList, &QListWidget::itemDoubleClicked,
       this, &SelectWindow::onDoubleClick);
 
-  out << "connect the buttons to the slots" << endl;
+  // connect the buttons to the slots
   connect(backBtn, &QPushButton::clicked, this, &SelectWindow::onBack);
   connect(cancelBtn, &QPushButton::clicked, this, &SelectWindow::onCancel);
   connect(selectBtn, &QPushButton::clicked, this, &SelectWindow::onSelect);
 
-  out << "display root" << endl;
+  // display root
   curDir->setReadOnly(true);
   displayDir("/");
 
-  out << "lay out the grid" << endl;
+  // lay out the grid
   QGridLayout* grid = new QGridLayout(this);
   grid->addWidget(backBtn, 0, 0);
   grid->addWidget(curDir, 0, 1, 1, 3);
@@ -107,6 +104,12 @@ void SelectWindow::toggleSelect (QString curText) {
 }
 
 void SelectWindow::onDoubleClick (QListWidgetItem* item) {
-  displayDir(curDir->text() + item->text());
+  QRegularExpression sampleRegEx("^.+[.][w][a][v]$");
+  if (sampleRegEx.match(item->text()).hasMatch()) {
+    onSelect();
+  }
+  else {
+    displayDir(curDir->text() + item->text());
+  }
 }
 
