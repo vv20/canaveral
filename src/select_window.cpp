@@ -51,18 +51,14 @@ SelectWindow::SelectWindow (SamplesTab* tab, QWidget* parent) : QWidget(parent) 
 }
 
 void SelectWindow::displayDir (QString dirName) {
-  QTextStream out(stdout);
-
   curDir->setText(dirName);
   dirList->clear();
 
-  out << "open the directory " << dirName << endl;
   QDir dir(dirName);
   dir.setFilter(QDir::Files | QDir::AllDirs);
   dir.setSorting(QDir::Name);
   QFileInfoList fileList = dir.entryInfoList();
 
-  out << "add the directories and wav files to the list" << endl;
   QRegularExpression sampleRegEx("^.+[.][w][a][v]$");
   for (QFileInfo file : fileList) {
     if (file.isDir()) {

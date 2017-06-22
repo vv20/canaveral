@@ -56,7 +56,8 @@ SOURCES       = src/backend.cpp \
 		src/samples_tab.cpp \
 		src/volume_tab.cpp \
 		src/select_window.cpp \
-		src/sample.cpp .moc/moc_pad.cpp \
+		src/sample.cpp \
+		src/wav_parser.cpp .moc/moc_pad.cpp \
 		.moc/moc_samples_tab.cpp \
 		.moc/moc_select_window.cpp
 OBJECTS       = .obj/backend.o \
@@ -68,6 +69,7 @@ OBJECTS       = .obj/backend.o \
 		.obj/volume_tab.o \
 		.obj/select_window.o \
 		.obj/sample.o \
+		.obj/wav_parser.o \
 		.obj/moc_pad.o \
 		.obj/moc_samples_tab.o \
 		.obj/moc_select_window.o
@@ -221,7 +223,8 @@ DIST          = /usr/local/qt5/mkspecs/features/spec_pre.prf \
 		src/samples_tab.h \
 		src/volume_tab.h \
 		src/select_window.h \
-		src/sample.h src/backend.cpp \
+		src/sample.h \
+		src/wav_parser.h src/backend.cpp \
 		src/buttons_tab.cpp \
 		src/frontend.cpp \
 		src/main.cpp \
@@ -229,7 +232,8 @@ DIST          = /usr/local/qt5/mkspecs/features/spec_pre.prf \
 		src/samples_tab.cpp \
 		src/volume_tab.cpp \
 		src/select_window.cpp \
-		src/sample.cpp
+		src/sample.cpp \
+		src/wav_parser.cpp
 QMAKE_TARGET  = canaveral
 DESTDIR       = bin/
 TARGET        = bin/canaveral
@@ -549,8 +553,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents src/backend.h src/buttons_tab.h src/constants.h src/frontend.h src/pad.h src/samples_tab.h src/volume_tab.h src/select_window.h src/sample.h $(DISTDIR)/
-	$(COPY_FILE) --parents src/backend.cpp src/buttons_tab.cpp src/frontend.cpp src/main.cpp src/pad.cpp src/samples_tab.cpp src/volume_tab.cpp src/select_window.cpp src/sample.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents src/backend.h src/buttons_tab.h src/constants.h src/frontend.h src/pad.h src/samples_tab.h src/volume_tab.h src/select_window.h src/sample.h src/wav_parser.h $(DISTDIR)/
+	$(COPY_FILE) --parents src/backend.cpp src/buttons_tab.cpp src/frontend.cpp src/main.cpp src/pad.cpp src/samples_tab.cpp src/volume_tab.cpp src/select_window.cpp src/sample.cpp src/wav_parser.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -686,6 +690,7 @@ compiler_moc_header_clean:
 		src/backend.h \
 		src/sample.h \
 		/usr/local/qt5/include/QtCore/QString \
+		/usr/local/qt5/include/QtCore/QByteArray \
 		src/pad.h \
 		/usr/local/qt5/bin/moc
 	/usr/local/qt5/bin/moc $(DEFINES) -I/usr/local/qt5/mkspecs/linux-g++ -I/home/victor/Documents/canaveral -I/home/victor/Documents/canaveral -I/usr/local/qt5/include -I/usr/local/qt5/include/QtWidgets -I/usr/local/qt5/include/QtGui -I/usr/local/qt5/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/pad.h -o .moc/moc_pad.cpp
@@ -816,6 +821,7 @@ compiler_moc_header_clean:
 		src/backend.h \
 		src/sample.h \
 		/usr/local/qt5/include/QtCore/QString \
+		/usr/local/qt5/include/QtCore/QByteArray \
 		src/samples_tab.h \
 		/usr/local/qt5/bin/moc
 	/usr/local/qt5/bin/moc $(DEFINES) -I/usr/local/qt5/mkspecs/linux-g++ -I/home/victor/Documents/canaveral -I/home/victor/Documents/canaveral -I/usr/local/qt5/include -I/usr/local/qt5/include/QtWidgets -I/usr/local/qt5/include/QtGui -I/usr/local/qt5/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/samples_tab.h -o .moc/moc_samples_tab.cpp
@@ -953,6 +959,7 @@ compiler_moc_header_clean:
 		/usr/local/qt5/include/QtWidgets/QSlider \
 		src/backend.h \
 		src/sample.h \
+		/usr/local/qt5/include/QtCore/QByteArray \
 		src/select_window.h \
 		/usr/local/qt5/bin/moc
 	/usr/local/qt5/bin/moc $(DEFINES) -I/usr/local/qt5/mkspecs/linux-g++ -I/home/victor/Documents/canaveral -I/home/victor/Documents/canaveral -I/usr/local/qt5/include -I/usr/local/qt5/include/QtWidgets -I/usr/local/qt5/include/QtGui -I/usr/local/qt5/include/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include src/select_window.h -o .moc/moc_select_window.cpp
@@ -1089,6 +1096,7 @@ compiler_clean: compiler_moc_header_clean
 		src/backend.h \
 		src/sample.h \
 		/usr/local/qt5/include/QtCore/QString \
+		/usr/local/qt5/include/QtCore/QByteArray \
 		src/constants.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/buttons_tab.o src/buttons_tab.cpp
 
@@ -1211,6 +1219,7 @@ compiler_clean: compiler_moc_header_clean
 		src/backend.h \
 		src/sample.h \
 		/usr/local/qt5/include/QtCore/QString \
+		/usr/local/qt5/include/QtCore/QByteArray \
 		src/volume_tab.h \
 		src/samples_tab.h \
 		/usr/local/qt5/include/QtWidgets/QListWidget \
@@ -1350,6 +1359,7 @@ compiler_clean: compiler_moc_header_clean
 		src/backend.h \
 		src/sample.h \
 		/usr/local/qt5/include/QtCore/QString \
+		/usr/local/qt5/include/QtCore/QByteArray \
 		src/constants.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/main.o src/main.cpp
 
@@ -1462,6 +1472,7 @@ compiler_clean: compiler_moc_header_clean
 		src/backend.h \
 		src/sample.h \
 		/usr/local/qt5/include/QtCore/QString \
+		/usr/local/qt5/include/QtCore/QByteArray \
 		src/constants.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/pad.o src/pad.cpp
 
@@ -1598,6 +1609,7 @@ compiler_clean: compiler_moc_header_clean
 		src/backend.h \
 		src/sample.h \
 		/usr/local/qt5/include/QtCore/QString \
+		/usr/local/qt5/include/QtCore/QByteArray \
 		src/constants.h \
 		src/select_window.h \
 		/usr/local/qt5/include/QtWidgets/QLineEdit \
@@ -1726,6 +1738,7 @@ compiler_clean: compiler_moc_header_clean
 		src/backend.h \
 		src/sample.h \
 		/usr/local/qt5/include/QtCore/QString \
+		/usr/local/qt5/include/QtCore/QByteArray \
 		src/constants.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/volume_tab.o src/volume_tab.cpp
 
@@ -1873,7 +1886,8 @@ compiler_clean: compiler_moc_header_clean
 		src/pad.h \
 		/usr/local/qt5/include/QtWidgets/QSlider \
 		src/backend.h \
-		src/sample.h
+		src/sample.h \
+		/usr/local/qt5/include/QtCore/QByteArray
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/select_window.o src/select_window.cpp
 
 .obj/sample.o: src/sample.cpp /usr/local/qt5/include/QtCore/QString \
@@ -1918,8 +1932,92 @@ compiler_clean: compiler_moc_header_clean
 		/usr/local/qt5/include/QtCore/qregexp.h \
 		/usr/local/qt5/include/QtCore/qstringmatcher.h \
 		/usr/local/qt5/include/QtCore/qpoint.h \
-		src/sample.h
+		/usr/local/qt5/include/QtCore/QTextStream \
+		/usr/local/qt5/include/QtCore/qtextstream.h \
+		/usr/local/qt5/include/QtCore/qiodevice.h \
+		/usr/local/qt5/include/QtCore/qobject.h \
+		/usr/local/qt5/include/QtCore/qobjectdefs.h \
+		/usr/local/qt5/include/QtCore/qobjectdefs_impl.h \
+		/usr/local/qt5/include/QtCore/qcoreevent.h \
+		/usr/local/qt5/include/QtCore/qscopedpointer.h \
+		/usr/local/qt5/include/QtCore/qmetatype.h \
+		/usr/local/qt5/include/QtCore/qvarlengtharray.h \
+		/usr/local/qt5/include/QtCore/qcontainerfwd.h \
+		/usr/local/qt5/include/QtCore/qobject_impl.h \
+		/usr/local/qt5/include/QtCore/qlocale.h \
+		/usr/local/qt5/include/QtCore/qvariant.h \
+		/usr/local/qt5/include/QtCore/qmap.h \
+		/usr/local/qt5/include/QtCore/qdebug.h \
+		/usr/local/qt5/include/QtCore/qhash.h \
+		/usr/local/qt5/include/QtCore/qset.h \
+		/usr/local/qt5/include/QtCore/qcontiguouscache.h \
+		/usr/local/qt5/include/QtCore/qsharedpointer.h \
+		/usr/local/qt5/include/QtCore/qshareddata.h \
+		/usr/local/qt5/include/QtCore/qsharedpointer_impl.h \
+		src/sample.h \
+		/usr/local/qt5/include/QtCore/QByteArray \
+		src/wav_parser.h \
+		/usr/local/qt5/include/QtCore/QFile \
+		/usr/local/qt5/include/QtCore/qfile.h \
+		/usr/local/qt5/include/QtCore/qfiledevice.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/sample.o src/sample.cpp
+
+.obj/wav_parser.o: src/wav_parser.cpp /usr/local/qt5/include/QtCore/QList \
+		/usr/local/qt5/include/QtCore/qlist.h \
+		/usr/local/qt5/include/QtCore/qalgorithms.h \
+		/usr/local/qt5/include/QtCore/qglobal.h \
+		/usr/local/qt5/include/QtCore/qconfig.h \
+		/usr/local/qt5/include/QtCore/qfeatures.h \
+		/usr/local/qt5/include/QtCore/qsystemdetection.h \
+		/usr/local/qt5/include/QtCore/qprocessordetection.h \
+		/usr/local/qt5/include/QtCore/qcompilerdetection.h \
+		/usr/local/qt5/include/QtCore/qtypeinfo.h \
+		/usr/local/qt5/include/QtCore/qtypetraits.h \
+		/usr/local/qt5/include/QtCore/qisenum.h \
+		/usr/local/qt5/include/QtCore/qsysinfo.h \
+		/usr/local/qt5/include/QtCore/qlogging.h \
+		/usr/local/qt5/include/QtCore/qflags.h \
+		/usr/local/qt5/include/QtCore/qatomic.h \
+		/usr/local/qt5/include/QtCore/qbasicatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_bootstrap.h \
+		/usr/local/qt5/include/QtCore/qgenericatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_cxx11.h \
+		/usr/local/qt5/include/QtCore/qatomic_msvc.h \
+		/usr/local/qt5/include/QtCore/qglobalstatic.h \
+		/usr/local/qt5/include/QtCore/qmutex.h \
+		/usr/local/qt5/include/QtCore/qnumeric.h \
+		/usr/local/qt5/include/QtCore/qversiontagging.h \
+		/usr/local/qt5/include/QtCore/qiterator.h \
+		/usr/local/qt5/include/QtCore/qrefcount.h \
+		/usr/local/qt5/include/QtCore/qarraydata.h \
+		/usr/local/qt5/include/QtCore/qhashfunctions.h \
+		/usr/local/qt5/include/QtCore/qchar.h \
+		/usr/local/qt5/include/QtCore/qpair.h \
+		/usr/local/qt5/include/QtCore/qbytearraylist.h \
+		/usr/local/qt5/include/QtCore/qbytearray.h \
+		/usr/local/qt5/include/QtCore/qnamespace.h \
+		/usr/local/qt5/include/QtCore/qstring.h \
+		/usr/local/qt5/include/QtCore/qstringbuilder.h \
+		/usr/local/qt5/include/QtCore/qstringlist.h \
+		/usr/local/qt5/include/QtCore/qregexp.h \
+		/usr/local/qt5/include/QtCore/qstringmatcher.h \
+		/usr/local/qt5/include/QtCore/QByteArray \
+		/usr/local/qt5/include/QtCore/QString \
+		src/wav_parser.h \
+		/usr/local/qt5/include/QtCore/QFile \
+		/usr/local/qt5/include/QtCore/qfile.h \
+		/usr/local/qt5/include/QtCore/qfiledevice.h \
+		/usr/local/qt5/include/QtCore/qiodevice.h \
+		/usr/local/qt5/include/QtCore/qobject.h \
+		/usr/local/qt5/include/QtCore/qobjectdefs.h \
+		/usr/local/qt5/include/QtCore/qobjectdefs_impl.h \
+		/usr/local/qt5/include/QtCore/qcoreevent.h \
+		/usr/local/qt5/include/QtCore/qscopedpointer.h \
+		/usr/local/qt5/include/QtCore/qmetatype.h \
+		/usr/local/qt5/include/QtCore/qvarlengtharray.h \
+		/usr/local/qt5/include/QtCore/qcontainerfwd.h \
+		/usr/local/qt5/include/QtCore/qobject_impl.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/wav_parser.o src/wav_parser.cpp
 
 .obj/moc_pad.o: .moc/moc_pad.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/moc_pad.o .moc/moc_pad.cpp

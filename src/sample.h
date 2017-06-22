@@ -1,5 +1,6 @@
 #pragma	once
 #include <QString>
+#include <QByteArray>
 
 class Sample {
   public:
@@ -11,9 +12,13 @@ class Sample {
     QString getSamplename();
     /* ====================  DATA MEMBERS  ======================================= */
   private:
-    int noOfChannels;
-    int wavedata[];
+    QByteArray wavedata;
     QString filename;
     QString samplename;
+
+    int noOfChannels;
+    long sampleRate;
+    int bitsPerSample;
+    int format;
 };
 
