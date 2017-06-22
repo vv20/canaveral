@@ -70,6 +70,22 @@ Sample::Sample (QString file) {
 
     delete chunk;
   }
+
+  int bytesPerSample = bitsPerSample / 8;
+  numberOfFrames = wavedata.size() / noOfChannels / bytesPerSample;
+  // convert the wave data into separate channels of samples
+  for (int i = 0; i < numberOfFrames; i++) {
+    leftData[i] = (long) wavedata.mid(i*noOfChannels*bytesPerSample, 
+        bytesPerSample).data();
+    if (noOfChannels == 1) {
+      rightData[i] = leftData[i];
+    }
+    else {
+      rightData[i] = 
+        (long) wavedata.mid(i*noOfChannels*bytesPerSample + bytesPerSample,
+            bytesPerSample).data();
+    }
+  }
 }
 
 QString Sample::getFilename () {
@@ -80,3 +96,30 @@ QString Sample::getSamplename () {
   return samplename;
 }
 
+long* Sample::getLeftFrame (long length) {
+  long* frame = (long*) malloc(sizeof(long) * length);
+  for (int i = curLeft; i < length; i++) {
+    if (curLeft + i > numberOfFrames) {
+      for (int j = i; j < length; j++) {
+        frame[j] = 0;
+      }
+      break;
+    }
+  }
+  curLeft += length;
+  return frame;
+}
+
+long* Sample::getRightFrame (long length) {
+  long* frame = (long*) malloc(sizeof(long) * length);
+  for (int i = curRight; i < length; i++) {
+    if (curLeft + i > numberOfFrames) {
+      for (int j = i; j < length; j++) {
+        frame[j] = 0;
+      }
+      break;
+    }
+  }
+  curRight += length;
+  return frame;
+}

@@ -3,6 +3,7 @@
 #include <QPushButton>
 #include <QSlider>
 #include <QWidget>
+#include <QByteArray>
 #include "backend.h"
 #include "sample.h"
 
@@ -26,6 +27,7 @@ class Pad : public QObject {
     void loadSample(QString sample);
     void ejectSample();
     void play();
+    void stop();
     void playWithSustain();
     void playWithRepeat();
   

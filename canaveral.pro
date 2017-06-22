@@ -10,6 +10,8 @@ OBJECTS_DIR = .obj
 MOC_DIR = .moc
 QT += widgets
 QT += core
+CONFIG += link_pkgconfig
+PKGCONFIG += jack
 
 # Input
 HEADERS += src/backend.h \
