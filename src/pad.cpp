@@ -58,6 +58,7 @@ void Pad::play () {
 
 void Pad::stop () {
   backend->stopSample(sample);
+  sample->reset();
 }
 
 void Pad::playWithSustain () {

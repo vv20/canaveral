@@ -15,6 +15,9 @@ class Sample {
 
     float* getLeftFrame(long length);
     float* getRightFrame(long length);
+    
+    /* ====================  MUTATORS     ======================================= */
+    void reset();
     /* ====================  DATA MEMBERS  ======================================= */
   private:
     float* leftData;

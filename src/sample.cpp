@@ -136,3 +136,9 @@ float* Sample::getRightFrame (long length) {
   curRight += length;
   return frame;
 }
+
+void Sample::reset () {
+  curLeft = 0;
+  curRight = 0;
+}
+
