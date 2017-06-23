@@ -4,6 +4,9 @@
 #include "sample.h"
 #include "wav_parser.h"
 
+/**
+ * Deletes the contents of a chunk stream.
+ */
 void clearStream(ChunkStream* stream) {
   Chunk* chunk;
   while ((chunk = stream->next()) != NULL) {
@@ -11,12 +14,15 @@ void clearStream(ChunkStream* stream) {
   }
 }
 
+/**
+ * Converts a little-endian array of bytes into a float.
+ */
 float readIEEEFloat(QByteArray array) {
   QByteArray reverse;
   for (int i = array.size() - 1; i >= 0; i--) {
     reverse.append(array.at(i));
   }
-  return (float) *reverse.data() / 100;
+  return (float) *reverse.data();
 }
 
 Sample::Sample (QString file) {
@@ -28,6 +34,7 @@ Sample::Sample (QString file) {
   
   QTextStream out(stdout);
   filename = file;
+  volumeIndex = 0;
 
   QVector<QStringRef> split = file.splitRef("/");
   samplename = split.last().toString();
@@ -84,6 +91,8 @@ Sample::Sample (QString file) {
 
   leftData = (float*) malloc(sizeof(float) * numberOfFrames);
   rightData = (float*) malloc(sizeof(float) * numberOfFrames);
+  float max = 0;
+  
   // convert the wave data into separate channels of samples
   for (int i = 0; i < numberOfFrames; i++) {
     leftData[i] = readIEEEFloat(wavedata.mid(i*noOfChannels*bytesPerSample, 
@@ -96,6 +105,20 @@ Sample::Sample (QString file) {
       rightData[i] = readIEEEFloat(wavedata.mid(
             i*noOfChannels*bytesPerSample + bytesPerSample, bytesPerSample));
     }
+
+    // to be used later for normalisation
+    if (abs(leftData[i]) > max) {
+      max = abs(leftData[i]);
+    }
+    if (abs(rightData[i]) > max) {
+      max = abs(rightData[i]);
+    }
+  }
+
+  // normalise data
+  for (int i = 0; i < numberOfFrames; i++) {
+    leftData[i] = leftData[i] / max;
+    rightData[i] = rightData[i] / max;
   }
 }
 
@@ -116,7 +139,7 @@ float* Sample::getLeftFrame (long length) {
       }
       break;
     }
-    frame[i] = leftData[curLeft + i];
+    frame[i] = leftData[curLeft + i] * volumeIndex;
   }
   curLeft += length;
   return frame;
@@ -131,7 +154,7 @@ float* Sample::getRightFrame (long length) {
       }
       break;
     }
-    frame[i] = rightData[curRight + i];
+    frame[i] = rightData[curRight + i] * volumeIndex;
   }
   curRight += length;
   return frame;
@@ -140,5 +163,9 @@ float* Sample::getRightFrame (long length) {
 void Sample::reset () {
   curLeft = 0;
   curRight = 0;
+}
+
+void Sample::setVolume (float volume) {
+  volumeIndex = volume;
 }
 

@@ -18,6 +18,7 @@ class Sample {
     
     /* ====================  MUTATORS     ======================================= */
     void reset();
+    void setVolume(float volume);
     /* ====================  DATA MEMBERS  ======================================= */
   private:
     float* leftData;
@@ -30,6 +31,8 @@ class Sample {
     QByteArray wavedata;
     long numberOfFrames;
 
+    float volumeIndex;
+    
     int noOfChannels;
     long sampleRate;
     int bitsPerSample;

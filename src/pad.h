@@ -33,7 +33,6 @@ class Pad : public QObject {
   
   private:
     int position;
-    float volumeIndex;
     QPushButton* button;
     QSlider* slider;
     Sample* sample;

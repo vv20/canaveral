@@ -35,10 +35,7 @@ void Pad::createSlider (QWidget* parent) {
 }
 
 void Pad::setVolume (int volume) {
-  // if the middle is 1, i.e. original volume, then to get the index
-  // by which the soundwave should be multiplied, we divide current
-  // volume by original volume i.e. max volume / 2
-  volumeIndex = (float) (volume * 2 / VOLUME_TICKS);
+  sample->setVolume((float) volume / (100 / VOLUME_TICKS));
 }
 
 void Pad::loadSample (QString filename) {
