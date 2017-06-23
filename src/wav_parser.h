@@ -62,5 +62,4 @@ class ChunkStream {
     int index;
 };
 
-long readLittleEndian(QByteArray array);
 ChunkStream* parseFile(QString filename);

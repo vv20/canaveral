@@ -33,6 +33,8 @@ int callback (jack_nframes_t nframes, void* arg) {
     right_frames.append(sample->getRightFrame(nframes));
   }
 
+  QTextStream out(stdout);
+
   for (unsigned int i = 0; i < nframes; i++) {
     for (int j = 0; j < playingSamples.size(); j++) {
       left_buffer[i] += left_frames.at(j)[i];
