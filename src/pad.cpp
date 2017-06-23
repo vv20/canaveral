@@ -53,13 +53,11 @@ void Pad::ejectSample () {
 }
 
 void Pad::play () {
-  QTextStream out(stdout);
-  out << "playing sample " << sample->getSamplename() << endl;
+  backend->playSample(sample);
 }
 
 void Pad::stop () {
-  QTextStream out (stdout);
-  out << "stopping sample " << sample->getSamplename() << endl;
+  backend->stopSample(sample);
 }
 
 void Pad::playWithSustain () {

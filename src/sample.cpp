@@ -73,10 +73,13 @@ Sample::Sample (QString file) {
 
   int bytesPerSample = bitsPerSample / 8;
   numberOfFrames = wavedata.size() / noOfChannels / bytesPerSample;
+
+  leftData = (long*) malloc(sizeof(long) * numberOfFrames);
+  rightData = (long*) malloc(sizeof(long) * numberOfFrames);
   // convert the wave data into separate channels of samples
   for (int i = 0; i < numberOfFrames; i++) {
-    leftData[i] = (long) wavedata.mid(i*noOfChannels*bytesPerSample, 
-        bytesPerSample).data();
+    leftData[i] = readLittleEndian(wavedata.mid(i*noOfChannels*bytesPerSample, 
+        bytesPerSample));
     if (noOfChannels == 1) {
       rightData[i] = leftData[i];
     }

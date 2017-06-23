@@ -19,6 +19,15 @@ int callback (jack_nframes_t nframes, void* arg) {
 
   QList<long*> left_frames;
   QList<long*> right_frames;
+
+  if (playingSamples.size() == 0) {
+    for (unsigned int i = 0; i < nframes; i++) {
+      left_buffer[i] = 0;
+      right_buffer[i] = 0;
+    }
+    return 0;
+  }
+
   for (Sample* sample : playingSamples) {
     left_frames.append(sample->getLeftFrame(nframes));
     right_frames.append(sample->getRightFrame(nframes));
@@ -75,5 +84,13 @@ BackEnd::BackEnd () {
     out << "cannot activate client" << endl;
     exit (1);
   }
+}
+
+void BackEnd::playSample (Sample* sample) {
+  playingSamples.append(sample);
+}
+
+void BackEnd::stopSample (Sample* sample) {
+  playingSamples.removeOne(sample);
 }
 
