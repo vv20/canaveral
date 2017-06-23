@@ -17,8 +17,8 @@ int callback (jack_nframes_t nframes, void* arg) {
   sample_t* left_buffer = (sample_t*) jack_port_get_buffer(left_out, nframes);
   sample_t* right_buffer = (sample_t*) jack_port_get_buffer(right_out, nframes);
 
-  QList<long*> left_frames;
-  QList<long*> right_frames;
+  QList<float*> left_frames;
+  QList<float*> right_frames;
 
   if (playingSamples.size() == 0) {
     for (unsigned int i = 0; i < nframes; i++) {
@@ -36,6 +36,8 @@ int callback (jack_nframes_t nframes, void* arg) {
   QTextStream out(stdout);
 
   for (unsigned int i = 0; i < nframes; i++) {
+    left_buffer[i] = 0;
+    right_buffer[i] = 0;
     for (int j = 0; j < playingSamples.size(); j++) {
       left_buffer[i] += left_frames.at(j)[i];
       right_buffer[i] += right_frames.at(j)[i];

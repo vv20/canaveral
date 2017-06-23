@@ -11,8 +11,12 @@ void clearStream(ChunkStream* stream) {
   }
 }
 
-long readIEEEFloat(QByteArray array) {
-  return (float) *array.data();
+float readIEEEFloat(QByteArray array) {
+  QByteArray reverse;
+  for (int i = array.size() - 1; i >= 0; i--) {
+    reverse.append(array.at(i));
+  }
+  return (float) *reverse.data() / 100;
 }
 
 Sample::Sample (QString file) {
@@ -78,8 +82,8 @@ Sample::Sample (QString file) {
   int bytesPerSample = bitsPerSample / 8;
   numberOfFrames = wavedata.size() / noOfChannels / bytesPerSample;
 
-  leftData = (long*) malloc(sizeof(long) * numberOfFrames);
-  rightData = (long*) malloc(sizeof(long) * numberOfFrames);
+  leftData = (float*) malloc(sizeof(float) * numberOfFrames);
+  rightData = (float*) malloc(sizeof(float) * numberOfFrames);
   // convert the wave data into separate channels of samples
   for (int i = 0; i < numberOfFrames; i++) {
     leftData[i] = readIEEEFloat(wavedata.mid(i*noOfChannels*bytesPerSample, 
@@ -103,8 +107,8 @@ QString Sample::getSamplename () {
   return samplename;
 }
 
-long* Sample::getLeftFrame (long length) {
-  long* frame = (long*) malloc(sizeof(long) * length);
+float* Sample::getLeftFrame (long length) {
+  float* frame = (float*) malloc(sizeof(float) * length);
   for (int i = 0; i < length; i++) {
     if (curLeft + i > numberOfFrames) {
       for (int j = i; j < length; j++) {
@@ -118,8 +122,8 @@ long* Sample::getLeftFrame (long length) {
   return frame;
 }
 
-long* Sample::getRightFrame (long length) {
-  long* frame = (long*) malloc(sizeof(long) * length);
+float* Sample::getRightFrame (long length) {
+  float* frame = (float*) malloc(sizeof(float) * length);
   for (int i = 0; i < length; i++) {
     if (curRight + i > numberOfFrames) {
       for (int j = i; j < length; j++) {
