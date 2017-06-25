@@ -7,7 +7,7 @@
 Pad::Pad (int pos, BackEnd* back) {
   position = pos;
   backend = back;
-  sample = new Sample(NULL);
+  sample = new Sample("");
 }
 
 QPushButton* Pad::getButton () {
@@ -45,10 +45,10 @@ void Pad::loadSample (QString filename) {
 
 void Pad::ejectSample () {
   delete sample;
-  sample = new Sample(NULL);
+  sample = new Sample("");
 }
 
 void Pad::play () {
-  backend->playSample(sample);
+  backend->playSample(new Sample(sample));
 }
 

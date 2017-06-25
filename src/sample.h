@@ -8,6 +8,7 @@ class Sample {
   public:
     /* ====================  LIFECYCLE     ======================================= */
     Sample (QString filename);
+    Sample (Sample* sample);
 
     /* ====================  ACCESSORS     ======================================= */
     QString getFilename();
@@ -17,7 +18,6 @@ class Sample {
     bool getRightFrame(float* frame, long length);
     
     /* ====================  MUTATORS     ======================================= */
-    void reset();
     void setVolume(float volume);
   
   private:
@@ -37,6 +37,5 @@ class Sample {
     long sampleRate;
     int bitsPerSample;
     int format;
-    long curPos;
 };
 

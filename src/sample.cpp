@@ -26,7 +26,7 @@ float readIEEEFloat(QByteArray array) {
 }
 
 Sample::Sample (QString file) {
-  if (file == NULL) {
+  if (file == "") {
     filename = "---";
     samplename = "---";
     return;
@@ -122,6 +122,22 @@ Sample::Sample (QString file) {
   }
 }
 
+Sample::Sample (Sample* sample) {
+  leftData = sample->leftData;
+  rightData = sample->rightData;
+  curLeft = 0;
+  curRight = 0;
+  filename = sample->filename;
+  samplename = sample->samplename;
+  wavedata = sample->wavedata;
+  numberOfFrames = sample->numberOfFrames;
+  volumeIndex = sample->volumeIndex;
+  noOfChannels = sample->noOfChannels;
+  sampleRate = sample->sampleRate;
+  bitsPerSample = sample->bitsPerSample;
+  format = sample->format;
+}
+
 QString Sample::getFilename () {
   return filename;
 }
@@ -133,12 +149,9 @@ QString Sample::getSamplename () {
 bool Sample::getLeftFrame (float* frame, long length) {
   for (int i = 0; i < length; i++) {
     if (curLeft + i > numberOfFrames) {
-      for (int j = i; j < length; j++) {
-        frame[j] = 0;
-      }
       return false;
     }
-    frame[i] = leftData[curLeft + i] * volumeIndex;
+    frame[i] += leftData[curLeft + i] * volumeIndex;
   }
   curLeft += length;
   return true;
@@ -147,20 +160,12 @@ bool Sample::getLeftFrame (float* frame, long length) {
 bool Sample::getRightFrame (float* frame, long length) {
   for (int i = 0; i < length; i++) {
     if (curRight + i > numberOfFrames) {
-      for (int j = i; j < length; j++) {
-        frame[j] = 0;
-      }
       return false;
     }
-    frame[i] = rightData[curRight + i] * volumeIndex;
+    frame[i] += rightData[curRight + i] * volumeIndex;
   }
   curRight += length;
   return true;
-}
-
-void Sample::reset () {
-  curLeft = 0;
-  curRight = 0;
 }
 
 void Sample::setVolume (float volume) {

@@ -33,7 +33,7 @@ int callback (jack_nframes_t nframes, void* arg) {
   for (int i = 0; i < playingSamples.size(); i++) {
     if (!playingSamples.at(i)->getLeftFrame(left_buffer, (long) nframes) || 
         !playingSamples.at(i)->getRightFrame(right_buffer, (long) nframes)) {
-      playingSamples.at(i)->reset();
+      delete playingSamples.at(i);
       playingSamples.removeAt(i);
     }
   }
@@ -86,9 +86,5 @@ BackEnd::BackEnd () {
 
 void BackEnd::playSample (Sample* sample) {
   playingSamples.append(sample);
-}
-
-void BackEnd::stopSample (Sample* sample) {
-  playingSamples.removeOne(sample);
 }
 
