@@ -49,6 +49,8 @@ void Pad::ejectSample () {
 }
 
 void Pad::play () {
-  backend->playSample(new Sample(sample));
+  if (sample->getFilename() != "---") {
+    backend->playSample(new Sample(sample));
+  }
 }
 
