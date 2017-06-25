@@ -1,6 +1,6 @@
 #include <jack/jack.h>
-#include <QTextStream>
 #include <QList>
+#include <QTextStream>
 #include "backend.h"
 #include "sample.h"
 
@@ -17,9 +17,6 @@ int callback (jack_nframes_t nframes, void* arg) {
   sample_t* left_buffer = (sample_t*) jack_port_get_buffer(left_out, nframes);
   sample_t* right_buffer = (sample_t*) jack_port_get_buffer(right_out, nframes);
 
-  QList<float*> left_frames;
-  QList<float*> right_frames;
-
   if (playingSamples.size() == 0) {
     for (unsigned int i = 0; i < nframes; i++) {
       left_buffer[i] = 0;
@@ -28,19 +25,16 @@ int callback (jack_nframes_t nframes, void* arg) {
     return 0;
   }
 
-  for (Sample* sample : playingSamples) {
-    left_frames.append(sample->getLeftFrame(nframes));
-    right_frames.append(sample->getRightFrame(nframes));
-  }
-
-  QTextStream out(stdout);
-
   for (unsigned int i = 0; i < nframes; i++) {
     left_buffer[i] = 0;
     right_buffer[i] = 0;
-    for (int j = 0; j < playingSamples.size(); j++) {
-      left_buffer[i] += left_frames.at(j)[i];
-      right_buffer[i] += right_frames.at(j)[i];
+  }
+
+  for (int i = 0; i < playingSamples.size(); i++) {
+    if (!playingSamples.at(i)->getLeftFrame(left_buffer, (long) nframes) || 
+        !playingSamples.at(i)->getRightFrame(right_buffer, (long) nframes)) {
+      playingSamples.at(i)->reset();
+      playingSamples.removeAt(i);
     }
   }
   return 0;

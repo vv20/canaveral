@@ -24,8 +24,7 @@ QString Pad::getSample () {
 
 void Pad::createButton (QWidget* parent) {
   button = new QPushButton(QString::number(position+1), parent);
-  connect(button, &QPushButton::pressed, this, &Pad::play);
-  connect(button, &QPushButton::released, this, &Pad::stop);
+  connect(button, &QPushButton::clicked, this, &Pad::play);
 }
 
 void Pad::createSlider (QWidget* parent) {
@@ -51,20 +50,5 @@ void Pad::ejectSample () {
 
 void Pad::play () {
   backend->playSample(sample);
-}
-
-void Pad::stop () {
-  backend->stopSample(sample);
-  sample->reset();
-}
-
-void Pad::playWithSustain () {
-  QTextStream out(stdout);
-  out << "playing sample " << sample << " with sustain" << endl;
-}
-
-void Pad::playWithRepeat () {
-  QTextStream out(stdout);
-  out << "playing sample " << sample << " with repeat" << endl;
 }
 

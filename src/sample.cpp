@@ -130,34 +130,32 @@ QString Sample::getSamplename () {
   return samplename;
 }
 
-float* Sample::getLeftFrame (long length) {
-  float* frame = (float*) malloc(sizeof(float) * length);
+bool Sample::getLeftFrame (float* frame, long length) {
   for (int i = 0; i < length; i++) {
     if (curLeft + i > numberOfFrames) {
       for (int j = i; j < length; j++) {
         frame[j] = 0;
       }
-      break;
+      return false;
     }
     frame[i] = leftData[curLeft + i] * volumeIndex;
   }
   curLeft += length;
-  return frame;
+  return true;
 }
 
-float* Sample::getRightFrame (long length) {
-  float* frame = (float*) malloc(sizeof(float) * length);
+bool Sample::getRightFrame (float* frame, long length) {
   for (int i = 0; i < length; i++) {
     if (curRight + i > numberOfFrames) {
       for (int j = i; j < length; j++) {
         frame[j] = 0;
       }
-      break;
+      return false;
     }
     frame[i] = rightData[curRight + i] * volumeIndex;
   }
   curRight += length;
-  return frame;
+  return true;
 }
 
 void Sample::reset () {

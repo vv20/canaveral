@@ -27,9 +27,6 @@ class Pad : public QObject {
     void loadSample(QString sample);
     void ejectSample();
     void play();
-    void stop();
-    void playWithSustain();
-    void playWithRepeat();
   
   private:
     int position;

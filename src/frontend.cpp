@@ -6,16 +6,25 @@
 #include "volume_tab.h"
 #include "samples_tab.h"
 #include "buttons_tab.h"
+#include "hotkey_config.h"
 
 FrontEnd::FrontEnd (QVector<Pad*> pads, QWidget* parent) : QMainWindow(parent) {
+  // creating the hotkey configuration
+  hotkeys = new HotkeyConfig(pads, this, HotkeyConfig::LEFT_CLUSTER_16);
+
   // create the menus
   QAction* addHotKey = new QAction("&Add Hotkey", this);
   QAction* removeHotKey = new QAction("&Remove Hotkey", this);
   QAction* changeHotKey = new QAction("&Change Hotkey", this);
+  QAction* chooseHotKeyConfig = new QAction("&Select Configuration", this);
+  QAction* saveCurrentConfig = new QAction("&Save Current Coniguration", this);
   QMenu* hotkey = menuBar()->addMenu("&Hotkeys");
   hotkey->addAction(addHotKey);
   hotkey->addAction(removeHotKey);
   hotkey->addAction(changeHotKey);
+  hotkey->addSeparator();
+  hotkey->addAction(chooseHotKeyConfig);
+  hotkey->addAction(saveCurrentConfig);
 
   // initialising samples tab
   SamplesTab* samples = new SamplesTab(pads, this);

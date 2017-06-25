@@ -13,13 +13,13 @@ class Sample {
     QString getFilename();
     QString getSamplename();
 
-    float* getLeftFrame(long length);
-    float* getRightFrame(long length);
+    bool getLeftFrame(float* frame, long length);
+    bool getRightFrame(float* frame, long length);
     
     /* ====================  MUTATORS     ======================================= */
     void reset();
     void setVolume(float volume);
-    /* ====================  DATA MEMBERS  ======================================= */
+  
   private:
     float* leftData;
     float* rightData;
