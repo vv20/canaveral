@@ -26,16 +26,8 @@ typedef union {
  */
 float readIEEEFloat(QByteArray array) {
   float_converter conv;
-  //for (int i = 0; i < array.size(); i++) {
-  //  conv.array[i] = array.at(array.size() - 1 - i);
-  //}
-  //return conv.ieee;
-  QByteArray inverse;
-  for (int i = array.size() - 1; i >= 0; i--) {
-    inverse.append(array.at(i));
-  }
-  for (int i = 0; i < inverse.size(); i++) {
-    conv.array[i] = inverse.at(i);
+  for (int i = 0; i < array.size(); i++) {
+    conv.array[i] = array.at(array.size() - 1 - i);
   }
   return conv.ieee;
 }
@@ -107,6 +99,8 @@ Sample::Sample (QString file) {
   leftData = (float*) malloc(sizeof(float) * numberOfFrames);
   rightData = (float*) malloc(sizeof(float) * numberOfFrames);
   float max = 0.0;
+  float temp_max = 0.0;
+  float temp_min = 0.0;
   
   // convert the wave data into separate channels of samples
   for (int i = 0; i < numberOfFrames; i++) {
@@ -124,20 +118,34 @@ Sample::Sample (QString file) {
     // to be used later for normalisation
     //max = fmaxf(max, abs(leftData[i]));
     //max = fmaxf(max, abs(rightData[i]));
-    if (abs(leftData[i]) > max) {
-      out << "new max is " << QString::number(abs(leftData[i])) << endl;
-      max = abs(leftData[i]);
+    if (leftData[i] > temp_max) {
+      temp_max = leftData[i];
     }
-    if (abs(rightData[i]) > max) {
-      out << "new max is " << QString::number(abs(rightData[i])) << endl;
-      max = abs(rightData[i]);
+    if (rightData[i] > temp_max) {
+      temp_max = rightData[i];
+    }
+    if (leftData[i] < temp_min) {
+      temp_min = leftData[i];
+    }
+    if (rightData[i] < temp_min) {
+      temp_min = rightData[i];
     }
   }
+  if (temp_min < -temp_max) {
+    max = -temp_min;
+  }
+  else {
+    max = temp_max;
+  }
+  out << max << endl;
 
   // normalise data
   for (int i = 0; i < numberOfFrames; i++) {
     leftData[i] /= max;
     rightData[i] /= max;
+    if (leftData[i] > 1) {
+      out << "yo" << endl;
+    }
   }
 }
 
