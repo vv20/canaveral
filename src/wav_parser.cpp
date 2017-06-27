@@ -137,7 +137,7 @@ DataChunk* parseDataChunk (QByteArray contents, long offset) {
   }
   DataChunk* data = new DataChunk();
   data->length = readLittleEndian(contents.mid(offset + 4, 4)) + 8;
-  data->data = contents.mid(offset + 8, data->length);
+  data->data = contents.mid(offset + 8, data->length - 8);
   return data;
 }
 

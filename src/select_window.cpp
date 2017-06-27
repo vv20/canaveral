@@ -35,7 +35,8 @@ SelectWindow::SelectWindow (SamplesTab* tab, QWidget* parent) : QWidget(parent) 
 
   // display root
   curDir->setReadOnly(true);
-  displayDir("/");
+  //displayDir("/");
+  displayDir("/home/victor/Music/misc/");
 
   // lay out the grid
   QGridLayout* grid = new QGridLayout(this);

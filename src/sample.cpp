@@ -1,6 +1,8 @@
 #include <QString>
 #include <QVector>
 #include <QTextStream>
+#include <QFile>
+#include <math.h>
 #include "sample.h"
 #include "wav_parser.h"
 
@@ -14,15 +16,28 @@ void clearStream(ChunkStream* stream) {
   }
 }
 
+typedef union {
+  char array[4];
+  float ieee;
+} float_converter;
+
 /**
  * Converts a little-endian array of bytes into a float.
  */
 float readIEEEFloat(QByteArray array) {
-  QByteArray reverse;
+  float_converter conv;
+  //for (int i = 0; i < array.size(); i++) {
+  //  conv.array[i] = array.at(array.size() - 1 - i);
+  //}
+  //return conv.ieee;
+  QByteArray inverse;
   for (int i = array.size() - 1; i >= 0; i--) {
-    reverse.append(array.at(i));
+    inverse.append(array.at(i));
   }
-  return (float) *reverse.data();
+  for (int i = 0; i < inverse.size(); i++) {
+    conv.array[i] = inverse.at(i);
+  }
+  return conv.ieee;
 }
 
 Sample::Sample (QString file) {
@@ -91,7 +106,7 @@ Sample::Sample (QString file) {
 
   leftData = (float*) malloc(sizeof(float) * numberOfFrames);
   rightData = (float*) malloc(sizeof(float) * numberOfFrames);
-  float max = 0;
+  float max = 0.0;
   
   // convert the wave data into separate channels of samples
   for (int i = 0; i < numberOfFrames; i++) {
@@ -107,18 +122,22 @@ Sample::Sample (QString file) {
     }
 
     // to be used later for normalisation
+    //max = fmaxf(max, abs(leftData[i]));
+    //max = fmaxf(max, abs(rightData[i]));
     if (abs(leftData[i]) > max) {
+      out << "new max is " << QString::number(abs(leftData[i])) << endl;
       max = abs(leftData[i]);
     }
     if (abs(rightData[i]) > max) {
+      out << "new max is " << QString::number(abs(rightData[i])) << endl;
       max = abs(rightData[i]);
     }
   }
 
   // normalise data
   for (int i = 0; i < numberOfFrames; i++) {
-    leftData[i] = leftData[i] / max;
-    rightData[i] = rightData[i] / max;
+    leftData[i] /= max;
+    rightData[i] /= max;
   }
 }
 
