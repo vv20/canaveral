@@ -27,7 +27,7 @@ typedef union {
 float readIEEEFloat(QByteArray array) {
   float_converter conv;
   for (int i = 0; i < array.size(); i++) {
-    conv.array[i] = array.at(array.size() - 1 - i);
+    conv.array[i] = array.at(i);
   }
   return conv.ieee;
 }
@@ -116,8 +116,6 @@ Sample::Sample (QString file) {
     }
 
     // to be used later for normalisation
-    //max = fmaxf(max, abs(leftData[i]));
-    //max = fmaxf(max, abs(rightData[i]));
     if (leftData[i] > temp_max) {
       temp_max = leftData[i];
     }
@@ -137,15 +135,11 @@ Sample::Sample (QString file) {
   else {
     max = temp_max;
   }
-  out << max << endl;
 
   // normalise data
   for (int i = 0; i < numberOfFrames; i++) {
     leftData[i] /= max;
     rightData[i] /= max;
-    if (leftData[i] > 1) {
-      out << "yo" << endl;
-    }
   }
 }
 

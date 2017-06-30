@@ -7,7 +7,7 @@
 jack_port_t* left_out; /** Left output port. */
 jack_port_t* right_out; /** Right output port. */
 
-typedef jack_default_audio_sample_t sample_t;
+typedef float sample_t;
 
 jack_nframes_t samplerate; /** Current sample rate of the JACK engine. */
 
