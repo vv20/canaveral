@@ -27,8 +27,8 @@ int callback (jack_nframes_t nframes, void* arg) {
   // let each sample imprint its next frame onto the buffers
   for (int i = 0; i < playingSamples.size(); i++) {
     // if the sample has reached the end, delete it
-    if (!playingSamples.at(i)->getLeftFrame(left_buffer, (long) nframes) || 
-        !playingSamples.at(i)->getRightFrame(right_buffer, (long) nframes)) {
+    if (!playingSamples.at(i)->getLeftFrame(left_buffer, nframes, samplerate) || 
+        !playingSamples.at(i)->getRightFrame(right_buffer, nframes, samplerate)) {
       delete playingSamples.at(i);
       playingSamples.removeAt(i);
     }
@@ -39,6 +39,11 @@ int callback (jack_nframes_t nframes, void* arg) {
 void shutdown (void* arg) {
   exit(1);
 }
+
+void rate_change (jack_nframes_t rate, void* arg) {
+  samplerate = rate;
+}
+
 
 BackEnd::BackEnd () {
   const char* client_name = "canaveral";

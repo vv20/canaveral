@@ -118,8 +118,6 @@ Sample::Sample (QString file) {
   float max = 0.0;
   float temp_max = 0.0;
   float temp_min = 0.0;
-  int* leftPCMData;
-  int* rightPCMData;
   // convert the wave data into separate channels of samples
   // different procedures, depending on the format
   switch (format) {
@@ -159,46 +157,36 @@ Sample::Sample (QString file) {
         max = temp_max;
       }
 
-      // normalise data
-      for (int i = 0; i < numberOfFrames; i++) {
-        leftData[i] /= max;
-        rightData[i] /= max;
-      }
-
       break;
 
     case PCM_FORMAT:
-      leftPCMData = (int*) malloc(sizeof(int) * numberOfFrames);
-      rightPCMData = (int*) malloc(sizeof(int) * numberOfFrames);
       for (int i = 0; i < numberOfFrames; i++) {
-        leftPCMData[i] = readPCM(wavedata.mid(i*noOfChannels*bytesPerSample, 
+        leftData[i] = readPCM(wavedata.mid(i*noOfChannels*bytesPerSample, 
             bytesPerSample));
 
         if (noOfChannels == 1) {
-          rightPCMData[i] = leftPCMData[i];
+          rightData[i] = leftData[i];
         }
         else {
-          rightPCMData[i] = readPCM(wavedata.mid(
+          rightData[i] = readPCM(wavedata.mid(
                 i*noOfChannels*bytesPerSample + bytesPerSample, bytesPerSample));
         }
 
-        max = fmaxf(max, abs(leftPCMData[i]));
-        max = fmaxf(max, abs(rightPCMData[i]));
+        max = fmaxf(max, abs(leftData[i]));
+        max = fmaxf(max, abs(rightData[i]));
       }
 
-      // normalise data
-      for (int i = 0; i < numberOfFrames; i++) {
-        leftData[i] = leftPCMData[i] / max;
-        rightData[i] = rightPCMData[i] / max;
-      }
-
-      free(leftPCMData);
-      free(rightPCMData);
       break;
 
     default:
       out << "unsupported format" << endl;
       exit(1);
+  }
+
+  // normalise data
+  for (int i = 0; i < numberOfFrames; i++) {
+    leftData[i] /= max;
+    rightData[i] /= max;
   }
 }
 
@@ -225,25 +213,25 @@ QString Sample::getSamplename () {
   return samplename;
 }
 
-bool Sample::getLeftFrame (float* frame, long length) {
+bool Sample::getLeftFrame (float* frame, long length, long rate) {
   for (int i = 0; i < length; i++) {
     if (curLeft + i > numberOfFrames) {
       return false;
     }
-    frame[i] += leftData[curLeft + i] * volumeIndex;
+    frame[i] += leftData[curLeft + i * sampleRate / rate] * volumeIndex;
   }
-  curLeft += length;
+  curLeft += length * sampleRate / rate;
   return true;
 }
 
-bool Sample::getRightFrame (float* frame, long length) {
+bool Sample::getRightFrame (float* frame, long length, long rate) {
   for (int i = 0; i < length; i++) {
     if (curRight + i > numberOfFrames) {
       return false;
     }
-    frame[i] += rightData[curRight + i] * volumeIndex;
+    frame[i] += rightData[curRight + i * sampleRate / rate] * volumeIndex;
   }
-  curRight += length;
+  curRight += length * sampleRate / rate;
   return true;
 }
 

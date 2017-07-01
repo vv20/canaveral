@@ -17,8 +17,8 @@ class Sample {
     QString getFilename();
     QString getSamplename();
 
-    bool getLeftFrame(float* frame, long length);
-    bool getRightFrame(float* frame, long length);
+    bool getLeftFrame(float* frame, long length, long rate);
+    bool getRightFrame(float* frame, long length, long rate);
     
     /* ====================  MUTATORS     ======================================= */
     void setVolume(float volume);
