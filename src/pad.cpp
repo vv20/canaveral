@@ -44,6 +44,8 @@ void Pad::loadSample (QString filename) {
 }
 
 void Pad::ejectSample () {
+  free(sample->leftData);
+  free(sample->rightData);
   delete sample;
   sample = new Sample("");
 }

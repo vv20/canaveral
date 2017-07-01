@@ -6,6 +6,11 @@
 #include "sample.h"
 #include "wav_parser.h"
 
+typedef union {
+  char array[4];
+  float ieee;
+} float_converter;
+
 /**
  * Deletes the contents of a chunk stream.
  */
@@ -16,13 +21,8 @@ void clearStream(ChunkStream* stream) {
   }
 }
 
-typedef union {
-  char array[4];
-  float ieee;
-} float_converter;
-
 /**
- * Converts a little-endian array of bytes into a float.
+ * Converts an array of bytes into a float.
  */
 float readIEEEFloat(QByteArray array) {
   float_converter conv;
@@ -32,6 +32,15 @@ float readIEEEFloat(QByteArray array) {
   return conv.ieee;
 }
 
+int readPCM(QByteArray array) {
+  // the first byte is offset binary, not two's complement
+  int result = -pow(2, 7) - 1 + (unsigned char) array.at(0);
+  for (int i = 1; i < array.size(); i++) {
+    result += array.at(i) * pow(2, 8 * i);
+  }
+  return result;
+}
+
 Sample::Sample (QString file) {
   if (file == "") {
     filename = "---";
@@ -39,6 +48,7 @@ Sample::Sample (QString file) {
     return;
   }
   
+  QByteArray wavedata;
   QTextStream out(stdout);
   filename = file;
   volumeIndex = 0;
@@ -55,7 +65,7 @@ Sample::Sample (QString file) {
   }
 
   Chunk* chunk = stream->next();
-  if (dynamic_cast<RiffChunk*>(chunk) == NULL) {
+  if (chunk->type != RIFF_CHUNK) {
     out << "wav file corrupted, could not read RIFF tag" << endl;
     filename = "---";
     samplename = "---";
@@ -65,7 +75,7 @@ Sample::Sample (QString file) {
   delete chunk;
 
   chunk = stream->next();
-  if (dynamic_cast<WaveChunk*>(chunk) == NULL) {
+  if (chunk->type != WAVE_CHUNK) {
     out << "wav file corrupted, could not read WAVE tag" <<endl;
     filename = "---";
     samplename = "---";
@@ -75,71 +85,120 @@ Sample::Sample (QString file) {
   delete chunk;
 
   while ((chunk = stream->next()) != NULL) {
-    if (dynamic_cast<FmtChunk*>(chunk) != NULL) {
-      noOfChannels = dynamic_cast<FmtChunk*>(chunk)->nChannels;
-      sampleRate = dynamic_cast<FmtChunk*>(chunk)->samplingRate;
-      bitsPerSample = dynamic_cast<FmtChunk*>(chunk)->bitsPerSample;
-      format = dynamic_cast<FmtChunk*>(chunk)->format;
-    }
+    switch (chunk->type) {
+      case FMT_CHUNK:
+        noOfChannels = dynamic_cast<FmtChunk*>(chunk)->nChannels;
+        sampleRate = dynamic_cast<FmtChunk*>(chunk)->samplingRate;
+        bitsPerSample = dynamic_cast<FmtChunk*>(chunk)->bitsPerSample;
+        format = dynamic_cast<FmtChunk*>(chunk)->format;
+        break;
 
-    if (dynamic_cast<DataChunk*>(chunk) != NULL) {
-      wavedata = dynamic_cast<DataChunk*>(chunk)->data;
-    }
+      case DATA_CHUNK:
+        wavedata = dynamic_cast<DataChunk*>(chunk)->data;
+        break;
 
-    if (dynamic_cast<OtherChunk*>(chunk) != NULL) {
-      out << "unknown chunk " << dynamic_cast<OtherChunk*>(chunk)->tag << endl;
+      case OTHER_CHUNK:
+        out << "unknown chunk " << dynamic_cast<OtherChunk*>(chunk)->tag << endl;
+        break;
     }
 
     delete chunk;
   }
+  out << "no of channels: " << QString::number(noOfChannels) << endl;
+  out << "sample rate: " << QString::number(sampleRate) << endl;
+  out << "bits per sample: " << QString::number(bitsPerSample) << endl;
+  out << "format: " << QString::number(format) << endl;
 
   int bytesPerSample = bitsPerSample / 8;
   numberOfFrames = wavedata.size() / noOfChannels / bytesPerSample;
 
   leftData = (float*) malloc(sizeof(float) * numberOfFrames);
   rightData = (float*) malloc(sizeof(float) * numberOfFrames);
+  
   float max = 0.0;
   float temp_max = 0.0;
   float temp_min = 0.0;
-  
+  int* leftPCMData;
+  int* rightPCMData;
   // convert the wave data into separate channels of samples
-  for (int i = 0; i < numberOfFrames; i++) {
-    leftData[i] = readIEEEFloat(wavedata.mid(i*noOfChannels*bytesPerSample, 
-        bytesPerSample));
+  // different procedures, depending on the format
+  switch (format) {
+    case IEEE_FLOAT_FORMAT:
+      for (int i = 0; i < numberOfFrames; i++) {
+        leftData[i] = readIEEEFloat(wavedata.mid(i*noOfChannels*bytesPerSample, 
+            bytesPerSample));
 
-    if (noOfChannels == 1) {
-      rightData[i] = leftData[i];
-    }
-    else {
-      rightData[i] = readIEEEFloat(wavedata.mid(
-            i*noOfChannels*bytesPerSample + bytesPerSample, bytesPerSample));
-    }
+        if (noOfChannels == 1) {
+          rightData[i] = leftData[i];
+        }
+        else {
+          rightData[i] = readIEEEFloat(wavedata.mid(
+                i*noOfChannels*bytesPerSample + bytesPerSample, bytesPerSample));
+        }
 
-    // to be used later for normalisation
-    if (leftData[i] > temp_max) {
-      temp_max = leftData[i];
-    }
-    if (rightData[i] > temp_max) {
-      temp_max = rightData[i];
-    }
-    if (leftData[i] < temp_min) {
-      temp_min = leftData[i];
-    }
-    if (rightData[i] < temp_min) {
-      temp_min = rightData[i];
-    }
-  }
-  if (temp_min < -temp_max) {
-    max = -temp_min;
-  }
-  else {
-    max = temp_max;
-  }
+        // to be used later for normalisation
+        if (leftData[i] > temp_max) {
+          temp_max = leftData[i];
+        }
+        if (rightData[i] > temp_max) {
+          temp_max = rightData[i];
+        }
+        if (leftData[i] < temp_min) {
+          temp_min = leftData[i];
+        }
+        if (rightData[i] < temp_min) {
+          temp_min = rightData[i];
+        }
+      }
 
-  // normalise data
-  for (int i = 0; i < numberOfFrames; i++) {
-    leftData[i] /= max;
-    rightData[i] /= max;
+      // figure out the true maximum absolute value
+      if (temp_min < -temp_max) {
+        max = -temp_min;
+      }
+      else {
+        max = temp_max;
+      }
+
+      // normalise data
+      for (int i = 0; i < numberOfFrames; i++) {
+        leftData[i] /= max;
+        rightData[i] /= max;
+      }
+
+      break;
+
+    case PCM_FORMAT:
+      leftPCMData = (int*) malloc(sizeof(int) * numberOfFrames);
+      rightPCMData = (int*) malloc(sizeof(int) * numberOfFrames);
+      for (int i = 0; i < numberOfFrames; i++) {
+        leftPCMData[i] = readPCM(wavedata.mid(i*noOfChannels*bytesPerSample, 
+            bytesPerSample));
+
+        if (noOfChannels == 1) {
+          rightPCMData[i] = leftPCMData[i];
+        }
+        else {
+          rightPCMData[i] = readPCM(wavedata.mid(
+                i*noOfChannels*bytesPerSample + bytesPerSample, bytesPerSample));
+        }
+
+        max = fmaxf(max, abs(leftPCMData[i]));
+        max = fmaxf(max, abs(rightPCMData[i]));
+      }
+
+      // normalise data
+      for (int i = 0; i < numberOfFrames; i++) {
+        leftData[i] = leftPCMData[i] / max;
+        rightData[i] = rightPCMData[i] / max;
+      }
+
+      free(leftPCMData);
+      free(rightPCMData);
+      break;
+
+    default:
+      out << "unsupported format" << endl;
+      exit(1);
   }
 }
 
@@ -150,7 +209,6 @@ Sample::Sample (Sample* sample) {
   curRight = 0;
   filename = sample->filename;
   samplename = sample->samplename;
-  wavedata = sample->wavedata;
   numberOfFrames = sample->numberOfFrames;
   volumeIndex = sample->volumeIndex;
   noOfChannels = sample->noOfChannels;

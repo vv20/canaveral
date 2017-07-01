@@ -5,17 +5,29 @@
 
 Chunk::~Chunk() {}
 
-RiffChunk::RiffChunk () {}
+RiffChunk::RiffChunk () {
+  type = RIFF_CHUNK;
+}
 
-WaveChunk::WaveChunk () {}
+WaveChunk::WaveChunk () {
+  type = WAVE_CHUNK;
+}
 
-FactChunk::FactChunk () {}
+FactChunk::FactChunk () {
+  type = FACT_CHUNK;
+}
 
-FmtChunk::FmtChunk () {}
+FmtChunk::FmtChunk () {
+  type = FMT_CHUNK;
+}
 
-DataChunk::DataChunk () {}
+DataChunk::DataChunk () {
+  type = DATA_CHUNK;
+}
 
-OtherChunk::OtherChunk () {}
+OtherChunk::OtherChunk () {
+  type = OTHER_CHUNK;
+}
 
 ChunkStream::ChunkStream () {
   index = 0;

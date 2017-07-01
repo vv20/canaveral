@@ -1,9 +1,18 @@
 #pragma	once
 #include <QByteArray>
 #include <QFile>
+typedef enum {
+  RIFF_CHUNK,
+  WAVE_CHUNK,
+  FACT_CHUNK,
+  FMT_CHUNK,
+  DATA_CHUNK,
+  OTHER_CHUNK
+} chunk_type;
 
 class Chunk {
   public:
+    chunk_type type;
     virtual ~Chunk();
     long length;
 };

@@ -3,9 +3,12 @@
 #include <QByteArray>
 
 #define IEEE_FLOAT_FORMAT (3)
+#define PCM_FORMAT (1)
 
 class Sample {
   public:
+    float* leftData;
+    float* rightData;
     /* ====================  LIFECYCLE     ======================================= */
     Sample (QString filename);
     Sample (Sample* sample);
@@ -21,14 +24,11 @@ class Sample {
     void setVolume(float volume);
   
   private:
-    float* leftData;
-    float* rightData;
     long curLeft;
     long curRight;
 
     QString filename;
     QString samplename;
-    QByteArray wavedata;
     long numberOfFrames;
 
     float volumeIndex;
