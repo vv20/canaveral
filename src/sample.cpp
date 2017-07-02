@@ -214,25 +214,21 @@ QString Sample::getSamplename () {
 }
 
 bool Sample::getLeftFrame (float* frame, long length, long rate) {
-  for (int i = 0; i < length; i++) {
-    if (curLeft + i > numberOfFrames) {
-      return false;
-    }
+  int limit = std::min(length, numberOfFrames - curLeft);
+  for (int i = 0; i < limit; i++) {
     frame[i] += leftData[curLeft + i * sampleRate / rate] * volumeIndex;
   }
   curLeft += length * sampleRate / rate;
-  return true;
+  return curLeft <= numberOfFrames;
 }
 
 bool Sample::getRightFrame (float* frame, long length, long rate) {
-  for (int i = 0; i < length; i++) {
-    if (curRight + i > numberOfFrames) {
-      return false;
-    }
+  int limit = std::min(length, numberOfFrames - curRight);
+  for (int i = 0; i < limit; i++) {
     frame[i] += rightData[curRight + i * sampleRate / rate] * volumeIndex;
   }
   curRight += length * sampleRate / rate;
-  return true;
+  return curRight <= numberOfFrames;
 }
 
 void Sample::setVolume (float volume) {
