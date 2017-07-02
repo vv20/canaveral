@@ -13,5 +13,12 @@ class FrontEnd : public QMainWindow {
 
   private:
     HotkeyConfig* hotkeys;
+    QVector<Pad*> pads;
+
+  private slots:
+    void setLeftClusterConfig();
+    void setRightClusterConfig();
+    void setSplitConfig();
+    void setNoConfig();
 };
 

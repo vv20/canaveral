@@ -58,6 +58,12 @@ HotkeyConfig::HotkeyConfig (QVector<Pad*> pads, QWidget* parent,
   }
 }
 
+HotkeyConfig::~HotkeyConfig() {
+  for (QShortcut* shortcut : shortcuts) {
+    delete shortcut;
+  }
+}
+
 void HotkeyConfig::createShortcuts (QVector<QString> triggers, QWidget* parent) {
   for (QString trigger : triggers) {
     shortcuts.append(new QShortcut(QKeySequence(trigger), parent));

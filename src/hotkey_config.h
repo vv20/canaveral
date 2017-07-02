@@ -16,6 +16,7 @@ class HotkeyConfig : public QObject {
 
     HotkeyConfig (QVector<Pad*> pads, QWidget* parent = 0,
         HotkeyConfig::Preset preset = NO_PRESET);
+    ~HotkeyConfig();
 
   private:
     QVector<QShortcut*> shortcuts;
