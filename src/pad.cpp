@@ -22,6 +22,10 @@ QString Pad::getSample () {
   return sample->getSamplename();
 }
 
+BackEnd* Pad::getBackend() {
+  return backend;
+}
+
 void Pad::createButton (QWidget* parent) {
   button = new QPushButton(QString::number(position+1), parent);
   connect(button, &QPushButton::clicked, this, &Pad::play);

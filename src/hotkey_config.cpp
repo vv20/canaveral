@@ -4,6 +4,8 @@
 
 HotkeyConfig::HotkeyConfig (QVector<Pad*> pads, QWidget* parent,
     HotkeyConfig::Preset preset) : QObject() {
+  backend = pads.at(0)->getBackend();
+
   switch (preset) {
     case NO_PRESET:
       return;
@@ -56,6 +58,11 @@ HotkeyConfig::HotkeyConfig (QVector<Pad*> pads, QWidget* parent,
       }
       break;
   }
+
+  // every config includes mute and killswitch
+  QShortcut* killswitch = new QShortcut(QKeySequence(Qt::Key_Space), parent);
+  shortcuts.append(killswitch);
+  connect(killswitch, &QShortcut::activated, this, &HotkeyConfig::silence);
 }
 
 HotkeyConfig::~HotkeyConfig() {
@@ -70,3 +77,6 @@ void HotkeyConfig::createShortcuts (QVector<QString> triggers, QWidget* parent) 
   }
 }
 
+void HotkeyConfig::silence() {
+  backend->silence();
+}

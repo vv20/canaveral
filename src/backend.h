@@ -6,5 +6,6 @@ class BackEnd {
   public:
     BackEnd ();
     void playSample (Sample* sample);
+    void silence();
 };
 

@@ -10,7 +10,6 @@ jack_port_t* right_out; /** Right output port. */
 typedef float sample_t;
 
 jack_nframes_t samplerate; /** Current sample rate of the JACK engine. */
-
 QList<Sample*> playingSamples; /** Currently active samples. */
 
 int callback (jack_nframes_t nframes, void* arg) {
@@ -106,3 +105,6 @@ void BackEnd::playSample (Sample* sample) {
   playingSamples.append(sample);
 }
 
+void BackEnd::silence() {
+  playingSamples.clear();
+}
