@@ -19,30 +19,16 @@ FrontEnd::FrontEnd (QVector<Pad*> padvector, QWidget* parent)
   QMenu* hotkey = menuBar()->addMenu("&Hotkeys");
 
   // actions of the hotkey menu
-  QAction* addHotKey = new QAction("&Add Hotkey", this);
-  QAction* removeHotKey = new QAction("&Remove Hotkey", this);
-  QAction* changeHotKey = new QAction("&Change Hotkey", this);
-  QAction* saveCurrentConfig = new QAction("&Save Current Coniguration", this);
-
-  // actions of the hotkey->choose config menu
   QAction* leftCluster = new QAction("&Left Cluster", this); 
   QAction* rightCluster = new QAction("&Right Cluster", this); 
   QAction* split = new QAction("&Split", this);
   QAction* none = new QAction("&None", this); 
 
   // assemble the hotkey menu 
-  hotkey->addAction(addHotKey);
-  hotkey->addAction(removeHotKey);
-  hotkey->addAction(changeHotKey);
-  hotkey->addSeparator();
-  
-  QMenu* chooseConfig = hotkey->addMenu(tr("&Choose Hotkey Configuration"));
-  chooseConfig->addAction(leftCluster);
-  chooseConfig->addAction(rightCluster);
-  chooseConfig->addAction(split);
-  chooseConfig->addAction(none);
-
-  hotkey->addAction(saveCurrentConfig);
+  hotkey->addAction(leftCluster);
+  hotkey->addAction(rightCluster);
+  hotkey->addAction(split);
+  hotkey->addAction(none);
 
   // link the actions to the corresponding slots
   connect(leftCluster, &QAction::triggered, 
