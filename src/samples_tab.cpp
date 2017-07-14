@@ -35,7 +35,18 @@ SamplesTab::SamplesTab (QVector<Pad*> padVector, QWidget* parent) : QWidget(pare
 
 void SamplesTab::select(QString file) {
   QTextStream out (stdout);
+  pads.at(lw->currentRow())->ejectSample();
   pads.at(lw->currentRow())->loadSample(file);
+  redrawList();
+}
+
+void SamplesTab::loadPreset (QVector<QString> filenames) {
+  for (int i = 0; i < filenames.size(); i++) {
+    if (filenames.at(i) != "---") {
+      pads.at(i)->ejectSample();
+      pads.at(i)->loadSample(filenames.at(i));
+    }
+  }
   redrawList();
 }
 

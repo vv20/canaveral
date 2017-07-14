@@ -12,3 +12,6 @@
 
 // volume will be in the range of 0 to 100/ticks
 #define VOLUME_TICKS (1)
+
+#define NAME_OF_PRESET_DIR "/home/victor/.local/share/canaveral/presets/"
+#define PRESET_EXT ".preset"

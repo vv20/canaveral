@@ -24,7 +24,8 @@ HEADERS += src/backend.h \
            src/select_window.h \
            src/sample.h \
            src/wav_parser.h \
-           src/hotkey_config.h
+           src/hotkey_config.h \
+           src/preset_window.h
 SOURCES += src/backend.cpp \
            src/buttons_tab.cpp \
            src/frontend.cpp \
@@ -36,3 +37,4 @@ SOURCES += src/backend.cpp \
            src/sample.cpp \
            src/wav_parser.cpp \
            src/hotkey_config.cpp \
+           src/preset_window.cpp

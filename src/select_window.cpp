@@ -59,6 +59,9 @@ void SelectWindow::displayDir (QString dirName) {
 
   QRegularExpression sampleRegEx("^.+[.][w][a][v]$");
   for (QFileInfo file : fileList) {
+    if (file.fileName() == "." || file.fileName() == "..") {
+      continue;
+    }
     if (file.isDir()) {
       dirList->addItem(file.fileName() + "/");
       continue;

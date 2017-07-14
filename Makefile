@@ -58,7 +58,8 @@ SOURCES       = src/backend.cpp \
 		src/select_window.cpp \
 		src/sample.cpp \
 		src/wav_parser.cpp \
-		src/hotkey_config.cpp .moc/moc_pad.cpp \
+		src/hotkey_config.cpp \
+		src/preset_window.cpp .moc/moc_pad.cpp \
 		.moc/moc_samples_tab.cpp \
 		.moc/moc_select_window.cpp
 OBJECTS       = .obj/backend.o \
@@ -72,6 +73,7 @@ OBJECTS       = .obj/backend.o \
 		.obj/sample.o \
 		.obj/wav_parser.o \
 		.obj/hotkey_config.o \
+		.obj/preset_window.o \
 		.obj/moc_pad.o \
 		.obj/moc_samples_tab.o \
 		.obj/moc_select_window.o
@@ -228,7 +230,8 @@ DIST          = /usr/local/qt5/mkspecs/features/spec_pre.prf \
 		src/select_window.h \
 		src/sample.h \
 		src/wav_parser.h \
-		src/hotkey_config.h src/backend.cpp \
+		src/hotkey_config.h \
+		src/preset_window.h src/backend.cpp \
 		src/buttons_tab.cpp \
 		src/frontend.cpp \
 		src/main.cpp \
@@ -238,7 +241,8 @@ DIST          = /usr/local/qt5/mkspecs/features/spec_pre.prf \
 		src/select_window.cpp \
 		src/sample.cpp \
 		src/wav_parser.cpp \
-		src/hotkey_config.cpp
+		src/hotkey_config.cpp \
+		src/preset_window.cpp
 QMAKE_TARGET  = canaveral
 DESTDIR       = bin/
 TARGET        = bin/canaveral
@@ -560,8 +564,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents src/backend.h src/buttons_tab.h src/constants.h src/frontend.h src/pad.h src/samples_tab.h src/volume_tab.h src/select_window.h src/sample.h src/wav_parser.h src/hotkey_config.h $(DISTDIR)/
-	$(COPY_FILE) --parents src/backend.cpp src/buttons_tab.cpp src/frontend.cpp src/main.cpp src/pad.cpp src/samples_tab.cpp src/volume_tab.cpp src/select_window.cpp src/sample.cpp src/wav_parser.cpp src/hotkey_config.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents src/backend.h src/buttons_tab.h src/constants.h src/frontend.h src/pad.h src/samples_tab.h src/volume_tab.h src/select_window.h src/sample.h src/wav_parser.h src/hotkey_config.h src/preset_window.h $(DISTDIR)/
+	$(COPY_FILE) --parents src/backend.cpp src/buttons_tab.cpp src/frontend.cpp src/main.cpp src/pad.cpp src/samples_tab.cpp src/volume_tab.cpp src/select_window.cpp src/sample.cpp src/wav_parser.cpp src/hotkey_config.cpp src/preset_window.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -1173,11 +1177,9 @@ compiler_clean: compiler_moc_header_clean
 		src/constants.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/buttons_tab.o src/buttons_tab.cpp
 
-.obj/frontend.o: src/frontend.cpp /usr/local/qt5/include/QtWidgets/QSplitter \
-		/usr/local/qt5/include/QtWidgets/qsplitter.h \
-		/usr/local/qt5/include/QtWidgets/qframe.h \
-		/usr/local/qt5/include/QtWidgets/qwidget.h \
-		/usr/local/qt5/include/QtGui/qwindowdefs.h \
+.obj/frontend.o: src/frontend.cpp /usr/local/qt5/include/QtCore/QVector \
+		/usr/local/qt5/include/QtCore/qvector.h \
+		/usr/local/qt5/include/QtCore/qalgorithms.h \
 		/usr/local/qt5/include/QtCore/qglobal.h \
 		/usr/local/qt5/include/QtCore/qconfig.h \
 		/usr/local/qt5/include/QtCore/qfeatures.h \
@@ -1200,26 +1202,31 @@ compiler_clean: compiler_moc_header_clean
 		/usr/local/qt5/include/QtCore/qmutex.h \
 		/usr/local/qt5/include/QtCore/qnumeric.h \
 		/usr/local/qt5/include/QtCore/qversiontagging.h \
-		/usr/local/qt5/include/QtCore/qobjectdefs.h \
-		/usr/local/qt5/include/QtCore/qnamespace.h \
-		/usr/local/qt5/include/QtCore/qobjectdefs_impl.h \
-		/usr/local/qt5/include/QtGui/qwindowdefs_win.h \
-		/usr/local/qt5/include/QtCore/qobject.h \
-		/usr/local/qt5/include/QtCore/qstring.h \
-		/usr/local/qt5/include/QtCore/qchar.h \
-		/usr/local/qt5/include/QtCore/qbytearray.h \
+		/usr/local/qt5/include/QtCore/qiterator.h \
+		/usr/local/qt5/include/QtCore/qlist.h \
 		/usr/local/qt5/include/QtCore/qrefcount.h \
 		/usr/local/qt5/include/QtCore/qarraydata.h \
-		/usr/local/qt5/include/QtCore/qstringbuilder.h \
-		/usr/local/qt5/include/QtCore/qlist.h \
-		/usr/local/qt5/include/QtCore/qalgorithms.h \
-		/usr/local/qt5/include/QtCore/qiterator.h \
 		/usr/local/qt5/include/QtCore/qhashfunctions.h \
+		/usr/local/qt5/include/QtCore/qchar.h \
 		/usr/local/qt5/include/QtCore/qpair.h \
 		/usr/local/qt5/include/QtCore/qbytearraylist.h \
+		/usr/local/qt5/include/QtCore/qbytearray.h \
+		/usr/local/qt5/include/QtCore/qnamespace.h \
+		/usr/local/qt5/include/QtCore/qstring.h \
+		/usr/local/qt5/include/QtCore/qstringbuilder.h \
 		/usr/local/qt5/include/QtCore/qstringlist.h \
 		/usr/local/qt5/include/QtCore/qregexp.h \
 		/usr/local/qt5/include/QtCore/qstringmatcher.h \
+		/usr/local/qt5/include/QtCore/qpoint.h \
+		/usr/local/qt5/include/QtWidgets/QSplitter \
+		/usr/local/qt5/include/QtWidgets/qsplitter.h \
+		/usr/local/qt5/include/QtWidgets/qframe.h \
+		/usr/local/qt5/include/QtWidgets/qwidget.h \
+		/usr/local/qt5/include/QtGui/qwindowdefs.h \
+		/usr/local/qt5/include/QtCore/qobjectdefs.h \
+		/usr/local/qt5/include/QtCore/qobjectdefs_impl.h \
+		/usr/local/qt5/include/QtGui/qwindowdefs_win.h \
+		/usr/local/qt5/include/QtCore/qobject.h \
 		/usr/local/qt5/include/QtCore/qcoreevent.h \
 		/usr/local/qt5/include/QtCore/qscopedpointer.h \
 		/usr/local/qt5/include/QtCore/qmetatype.h \
@@ -1230,13 +1237,11 @@ compiler_clean: compiler_moc_header_clean
 		/usr/local/qt5/include/QtGui/qpaintdevice.h \
 		/usr/local/qt5/include/QtCore/qrect.h \
 		/usr/local/qt5/include/QtCore/qsize.h \
-		/usr/local/qt5/include/QtCore/qpoint.h \
 		/usr/local/qt5/include/QtGui/qpalette.h \
 		/usr/local/qt5/include/QtGui/qcolor.h \
 		/usr/local/qt5/include/QtGui/qrgb.h \
 		/usr/local/qt5/include/QtGui/qrgba64.h \
 		/usr/local/qt5/include/QtGui/qbrush.h \
-		/usr/local/qt5/include/QtCore/qvector.h \
 		/usr/local/qt5/include/QtGui/qmatrix.h \
 		/usr/local/qt5/include/QtGui/qpolygon.h \
 		/usr/local/qt5/include/QtGui/qregion.h \
@@ -1272,7 +1277,6 @@ compiler_clean: compiler_moc_header_clean
 		/usr/local/qt5/include/QtCore/qfiledevice.h \
 		/usr/local/qt5/include/QtGui/qvector2d.h \
 		/usr/local/qt5/include/QtGui/qtouchdevice.h \
-		/usr/local/qt5/include/QtCore/QVector \
 		/usr/local/qt5/include/QtWidgets/QMenu \
 		/usr/local/qt5/include/QtWidgets/qmenu.h \
 		/usr/local/qt5/include/QtGui/qicon.h \
@@ -1280,6 +1284,16 @@ compiler_clean: compiler_moc_header_clean
 		/usr/local/qt5/include/QtWidgets/qactiongroup.h \
 		/usr/local/qt5/include/QtWidgets/QMenuBar \
 		/usr/local/qt5/include/QtWidgets/qmenubar.h \
+		/usr/local/qt5/include/QtWidgets/QInputDialog \
+		/usr/local/qt5/include/QtWidgets/qinputdialog.h \
+		/usr/local/qt5/include/QtWidgets/qdialog.h \
+		/usr/local/qt5/include/QtWidgets/qlineedit.h \
+		/usr/local/qt5/include/QtGui/qtextcursor.h \
+		/usr/local/qt5/include/QtGui/qtextformat.h \
+		/usr/local/qt5/include/QtGui/qpen.h \
+		/usr/local/qt5/include/QtGui/qtextoption.h \
+		/usr/local/qt5/include/QtCore/QFile \
+		/usr/local/qt5/include/QtCore/QTextStream \
 		src/frontend.h \
 		/usr/local/qt5/include/QtWidgets/QWidget \
 		/usr/local/qt5/include/QtWidgets/QMainWindow \
@@ -1306,7 +1320,6 @@ compiler_clean: compiler_moc_header_clean
 		src/hotkey_config.h \
 		/usr/local/qt5/include/QtWidgets/QShortcut \
 		/usr/local/qt5/include/QtWidgets/qshortcut.h \
-		src/volume_tab.h \
 		src/samples_tab.h \
 		/usr/local/qt5/include/QtWidgets/QListWidget \
 		/usr/local/qt5/include/QtWidgets/qlistwidget.h \
@@ -1323,7 +1336,10 @@ compiler_clean: compiler_moc_header_clean
 		/usr/local/qt5/include/QtWidgets/qstyle.h \
 		/usr/local/qt5/include/QtWidgets/qtabbar.h \
 		/usr/local/qt5/include/QtWidgets/qrubberband.h \
-		src/buttons_tab.h
+		src/buttons_tab.h \
+		src/volume_tab.h \
+		src/constants.h \
+		src/preset_window.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/frontend.o src/frontend.cpp
 
 .obj/main.o: src/main.cpp /usr/local/qt5/include/QtWidgets/QApplication \
@@ -1430,7 +1446,6 @@ compiler_clean: compiler_moc_header_clean
 		/usr/local/qt5/include/QtGui/qguiapplication.h \
 		/usr/local/qt5/include/QtGui/qinputmethod.h \
 		/usr/local/qt5/include/QtCore/QVector \
-		/usr/local/qt5/include/QtCore/QTextStream \
 		src/frontend.h \
 		/usr/local/qt5/include/QtWidgets/QWidget \
 		/usr/local/qt5/include/QtWidgets/QMainWindow \
@@ -1451,6 +1466,25 @@ compiler_clean: compiler_moc_header_clean
 		src/hotkey_config.h \
 		/usr/local/qt5/include/QtWidgets/QShortcut \
 		/usr/local/qt5/include/QtWidgets/qshortcut.h \
+		src/samples_tab.h \
+		/usr/local/qt5/include/QtWidgets/QListWidget \
+		/usr/local/qt5/include/QtWidgets/qlistwidget.h \
+		/usr/local/qt5/include/QtWidgets/qlistview.h \
+		/usr/local/qt5/include/QtWidgets/qabstractitemview.h \
+		/usr/local/qt5/include/QtWidgets/qabstractscrollarea.h \
+		/usr/local/qt5/include/QtWidgets/qframe.h \
+		/usr/local/qt5/include/QtCore/qabstractitemmodel.h \
+		/usr/local/qt5/include/QtCore/qitemselectionmodel.h \
+		/usr/local/qt5/include/QtWidgets/qabstractitemdelegate.h \
+		/usr/local/qt5/include/QtWidgets/qstyleoption.h \
+		/usr/local/qt5/include/QtWidgets/qabstractspinbox.h \
+		/usr/local/qt5/include/QtGui/qvalidator.h \
+		/usr/local/qt5/include/QtCore/qregularexpression.h \
+		/usr/local/qt5/include/QtWidgets/qstyle.h \
+		/usr/local/qt5/include/QtWidgets/qtabbar.h \
+		/usr/local/qt5/include/QtWidgets/qrubberband.h \
+		src/buttons_tab.h \
+		src/volume_tab.h \
 		src/constants.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/main.o src/main.cpp
 
@@ -2044,12 +2078,12 @@ compiler_clean: compiler_moc_header_clean
 		/usr/local/qt5/include/QtCore/qsharedpointer.h \
 		/usr/local/qt5/include/QtCore/qshareddata.h \
 		/usr/local/qt5/include/QtCore/qsharedpointer_impl.h \
-		src/sample.h \
-		/usr/local/qt5/include/QtCore/QByteArray \
-		src/wav_parser.h \
 		/usr/local/qt5/include/QtCore/QFile \
 		/usr/local/qt5/include/QtCore/qfile.h \
-		/usr/local/qt5/include/QtCore/qfiledevice.h
+		/usr/local/qt5/include/QtCore/qfiledevice.h \
+		src/sample.h \
+		/usr/local/qt5/include/QtCore/QByteArray \
+		src/wav_parser.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/sample.o src/sample.cpp
 
 .obj/wav_parser.o: src/wav_parser.cpp /usr/local/qt5/include/QtCore/QList \
@@ -2225,6 +2259,161 @@ compiler_clean: compiler_moc_header_clean
 		/usr/local/qt5/include/QtCore/QString \
 		src/constants.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/hotkey_config.o src/hotkey_config.cpp
+
+.obj/preset_window.o: src/preset_window.cpp /usr/local/qt5/include/QtWidgets/QVBoxLayout \
+		/usr/local/qt5/include/QtWidgets/qboxlayout.h \
+		/usr/local/qt5/include/QtWidgets/qlayout.h \
+		/usr/local/qt5/include/QtCore/qobject.h \
+		/usr/local/qt5/include/QtCore/qobjectdefs.h \
+		/usr/local/qt5/include/QtCore/qnamespace.h \
+		/usr/local/qt5/include/QtCore/qglobal.h \
+		/usr/local/qt5/include/QtCore/qconfig.h \
+		/usr/local/qt5/include/QtCore/qfeatures.h \
+		/usr/local/qt5/include/QtCore/qsystemdetection.h \
+		/usr/local/qt5/include/QtCore/qprocessordetection.h \
+		/usr/local/qt5/include/QtCore/qcompilerdetection.h \
+		/usr/local/qt5/include/QtCore/qtypeinfo.h \
+		/usr/local/qt5/include/QtCore/qtypetraits.h \
+		/usr/local/qt5/include/QtCore/qisenum.h \
+		/usr/local/qt5/include/QtCore/qsysinfo.h \
+		/usr/local/qt5/include/QtCore/qlogging.h \
+		/usr/local/qt5/include/QtCore/qflags.h \
+		/usr/local/qt5/include/QtCore/qatomic.h \
+		/usr/local/qt5/include/QtCore/qbasicatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_bootstrap.h \
+		/usr/local/qt5/include/QtCore/qgenericatomic.h \
+		/usr/local/qt5/include/QtCore/qatomic_cxx11.h \
+		/usr/local/qt5/include/QtCore/qatomic_msvc.h \
+		/usr/local/qt5/include/QtCore/qglobalstatic.h \
+		/usr/local/qt5/include/QtCore/qmutex.h \
+		/usr/local/qt5/include/QtCore/qnumeric.h \
+		/usr/local/qt5/include/QtCore/qversiontagging.h \
+		/usr/local/qt5/include/QtCore/qobjectdefs_impl.h \
+		/usr/local/qt5/include/QtCore/qstring.h \
+		/usr/local/qt5/include/QtCore/qchar.h \
+		/usr/local/qt5/include/QtCore/qbytearray.h \
+		/usr/local/qt5/include/QtCore/qrefcount.h \
+		/usr/local/qt5/include/QtCore/qarraydata.h \
+		/usr/local/qt5/include/QtCore/qstringbuilder.h \
+		/usr/local/qt5/include/QtCore/qlist.h \
+		/usr/local/qt5/include/QtCore/qalgorithms.h \
+		/usr/local/qt5/include/QtCore/qiterator.h \
+		/usr/local/qt5/include/QtCore/qhashfunctions.h \
+		/usr/local/qt5/include/QtCore/qpair.h \
+		/usr/local/qt5/include/QtCore/qbytearraylist.h \
+		/usr/local/qt5/include/QtCore/qstringlist.h \
+		/usr/local/qt5/include/QtCore/qregexp.h \
+		/usr/local/qt5/include/QtCore/qstringmatcher.h \
+		/usr/local/qt5/include/QtCore/qcoreevent.h \
+		/usr/local/qt5/include/QtCore/qscopedpointer.h \
+		/usr/local/qt5/include/QtCore/qmetatype.h \
+		/usr/local/qt5/include/QtCore/qvarlengtharray.h \
+		/usr/local/qt5/include/QtCore/qcontainerfwd.h \
+		/usr/local/qt5/include/QtCore/qobject_impl.h \
+		/usr/local/qt5/include/QtWidgets/qlayoutitem.h \
+		/usr/local/qt5/include/QtWidgets/qsizepolicy.h \
+		/usr/local/qt5/include/QtCore/qrect.h \
+		/usr/local/qt5/include/QtCore/qmargins.h \
+		/usr/local/qt5/include/QtCore/qsize.h \
+		/usr/local/qt5/include/QtCore/qpoint.h \
+		/usr/local/qt5/include/QtWidgets/qgridlayout.h \
+		/usr/local/qt5/include/QtWidgets/qwidget.h \
+		/usr/local/qt5/include/QtGui/qwindowdefs.h \
+		/usr/local/qt5/include/QtGui/qwindowdefs_win.h \
+		/usr/local/qt5/include/QtGui/qpaintdevice.h \
+		/usr/local/qt5/include/QtGui/qpalette.h \
+		/usr/local/qt5/include/QtGui/qcolor.h \
+		/usr/local/qt5/include/QtGui/qrgb.h \
+		/usr/local/qt5/include/QtGui/qrgba64.h \
+		/usr/local/qt5/include/QtGui/qbrush.h \
+		/usr/local/qt5/include/QtCore/qvector.h \
+		/usr/local/qt5/include/QtGui/qmatrix.h \
+		/usr/local/qt5/include/QtGui/qpolygon.h \
+		/usr/local/qt5/include/QtGui/qregion.h \
+		/usr/local/qt5/include/QtCore/qdatastream.h \
+		/usr/local/qt5/include/QtCore/qiodevice.h \
+		/usr/local/qt5/include/QtCore/qline.h \
+		/usr/local/qt5/include/QtGui/qtransform.h \
+		/usr/local/qt5/include/QtGui/qpainterpath.h \
+		/usr/local/qt5/include/QtGui/qimage.h \
+		/usr/local/qt5/include/QtGui/qpixelformat.h \
+		/usr/local/qt5/include/QtGui/qpixmap.h \
+		/usr/local/qt5/include/QtCore/qsharedpointer.h \
+		/usr/local/qt5/include/QtCore/qshareddata.h \
+		/usr/local/qt5/include/QtCore/qhash.h \
+		/usr/local/qt5/include/QtCore/qsharedpointer_impl.h \
+		/usr/local/qt5/include/QtGui/qfont.h \
+		/usr/local/qt5/include/QtGui/qfontmetrics.h \
+		/usr/local/qt5/include/QtGui/qfontinfo.h \
+		/usr/local/qt5/include/QtGui/qcursor.h \
+		/usr/local/qt5/include/QtGui/qkeysequence.h \
+		/usr/local/qt5/include/QtGui/qevent.h \
+		/usr/local/qt5/include/QtCore/qvariant.h \
+		/usr/local/qt5/include/QtCore/qmap.h \
+		/usr/local/qt5/include/QtCore/qdebug.h \
+		/usr/local/qt5/include/QtCore/qtextstream.h \
+		/usr/local/qt5/include/QtCore/qlocale.h \
+		/usr/local/qt5/include/QtCore/qset.h \
+		/usr/local/qt5/include/QtCore/qcontiguouscache.h \
+		/usr/local/qt5/include/QtCore/qurl.h \
+		/usr/local/qt5/include/QtCore/qurlquery.h \
+		/usr/local/qt5/include/QtCore/qfile.h \
+		/usr/local/qt5/include/QtCore/qfiledevice.h \
+		/usr/local/qt5/include/QtGui/qvector2d.h \
+		/usr/local/qt5/include/QtGui/qtouchdevice.h \
+		/usr/local/qt5/include/QtCore/QDir \
+		/usr/local/qt5/include/QtCore/qdir.h \
+		/usr/local/qt5/include/QtCore/qfileinfo.h \
+		src/preset_window.h \
+		/usr/local/qt5/include/QtCore/QString \
+		/usr/local/qt5/include/QtWidgets/QListWidget \
+		/usr/local/qt5/include/QtWidgets/qlistwidget.h \
+		/usr/local/qt5/include/QtWidgets/qlistview.h \
+		/usr/local/qt5/include/QtWidgets/qabstractitemview.h \
+		/usr/local/qt5/include/QtWidgets/qabstractscrollarea.h \
+		/usr/local/qt5/include/QtWidgets/qframe.h \
+		/usr/local/qt5/include/QtCore/qabstractitemmodel.h \
+		/usr/local/qt5/include/QtCore/qitemselectionmodel.h \
+		/usr/local/qt5/include/QtWidgets/qabstractitemdelegate.h \
+		/usr/local/qt5/include/QtWidgets/qstyleoption.h \
+		/usr/local/qt5/include/QtWidgets/qabstractspinbox.h \
+		/usr/local/qt5/include/QtGui/qvalidator.h \
+		/usr/local/qt5/include/QtCore/qregularexpression.h \
+		/usr/local/qt5/include/QtGui/qicon.h \
+		/usr/local/qt5/include/QtWidgets/qslider.h \
+		/usr/local/qt5/include/QtWidgets/qabstractslider.h \
+		/usr/local/qt5/include/QtWidgets/qstyle.h \
+		/usr/local/qt5/include/QtWidgets/qtabbar.h \
+		/usr/local/qt5/include/QtWidgets/qtabwidget.h \
+		/usr/local/qt5/include/QtWidgets/qrubberband.h \
+		/usr/local/qt5/include/QtWidgets/QPushButton \
+		/usr/local/qt5/include/QtWidgets/qpushbutton.h \
+		/usr/local/qt5/include/QtWidgets/qabstractbutton.h \
+		/usr/local/qt5/include/QtWidgets/QWidget \
+		src/frontend.h \
+		/usr/local/qt5/include/QtCore/QVector \
+		/usr/local/qt5/include/QtWidgets/QMainWindow \
+		/usr/local/qt5/include/QtWidgets/qmainwindow.h \
+		/usr/local/qt5/include/QtWidgets/QApplication \
+		/usr/local/qt5/include/QtWidgets/qapplication.h \
+		/usr/local/qt5/include/QtCore/qcoreapplication.h \
+		/usr/local/qt5/include/QtCore/qeventloop.h \
+		/usr/local/qt5/include/QtWidgets/qdesktopwidget.h \
+		/usr/local/qt5/include/QtGui/qguiapplication.h \
+		/usr/local/qt5/include/QtGui/qinputmethod.h \
+		src/pad.h \
+		/usr/local/qt5/include/QtWidgets/QSlider \
+		/usr/local/qt5/include/QtCore/QByteArray \
+		src/backend.h \
+		src/sample.h \
+		src/hotkey_config.h \
+		/usr/local/qt5/include/QtWidgets/QShortcut \
+		/usr/local/qt5/include/QtWidgets/qshortcut.h \
+		src/samples_tab.h \
+		src/buttons_tab.h \
+		src/volume_tab.h \
+		src/constants.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/preset_window.o src/preset_window.cpp
 
 .obj/moc_pad.o: .moc/moc_pad.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o .obj/moc_pad.o .moc/moc_pad.cpp

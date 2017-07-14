@@ -22,6 +22,10 @@ QString Pad::getSample () {
   return sample->getSamplename();
 }
 
+QString Pad::getFilename () {
+  return sample->getFilename();
+}
+
 BackEnd* Pad::getBackend() {
   return backend;
 }
@@ -48,8 +52,10 @@ void Pad::loadSample (QString filename) {
 }
 
 void Pad::ejectSample () {
-  free(sample->leftData);
-  free(sample->rightData);
+  if (sample->getSamplename() != "---") {
+    free(sample->leftData);
+    free(sample->rightData);
+  }
   delete sample;
   sample = new Sample("");
 }

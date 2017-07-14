@@ -18,6 +18,7 @@ class Pad : public QObject {
     QPushButton* getButton();
     QSlider* getSlider();
     QString getSample();
+    QString getFilename();
     BackEnd* getBackend();
     /* ====================  MUTATORS      ======================================= */
     void createButton(QWidget* parent);
