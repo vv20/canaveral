@@ -62,7 +62,7 @@ void Pad::ejectSample () {
 
 void Pad::play () {
   if (sample->getFilename() != "---") {
-    backend->playSample(new Sample(sample));
+    backend->playSample(new SingleSampleInstance(*sample));
   }
 }
 

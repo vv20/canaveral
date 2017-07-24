@@ -2364,6 +2364,7 @@ compiler_clean: compiler_moc_header_clean
 		/usr/local/qt5/include/QtCore/QDir \
 		/usr/local/qt5/include/QtCore/qdir.h \
 		/usr/local/qt5/include/QtCore/qfileinfo.h \
+		/usr/local/qt5/include/QtCore/QTextStream \
 		src/preset_window.h \
 		/usr/local/qt5/include/QtCore/QString \
 		/usr/local/qt5/include/QtWidgets/QListWidget \

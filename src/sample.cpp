@@ -190,21 +190,6 @@ Sample::Sample (QString file) {
   }
 }
 
-Sample::Sample (Sample* sample) {
-  leftData = sample->leftData;
-  rightData = sample->rightData;
-  curLeft = 0;
-  curRight = 0;
-  filename = sample->filename;
-  samplename = sample->samplename;
-  numberOfFrames = sample->numberOfFrames;
-  volumeIndex = sample->volumeIndex;
-  noOfChannels = sample->noOfChannels;
-  sampleRate = sample->sampleRate;
-  bitsPerSample = sample->bitsPerSample;
-  format = sample->format;
-}
-
 QString Sample::getFilename () {
   return filename;
 }
@@ -213,25 +198,84 @@ QString Sample::getSamplename () {
   return samplename;
 }
 
-bool Sample::getLeftFrame (float* frame, long length, long rate) {
-  int limit = std::min(length, numberOfFrames - curLeft);
-  for (int i = 0; i < limit; i++) {
-    frame[i] += leftData[curLeft + i * sampleRate / rate] * volumeIndex;
-  }
-  curLeft += length * sampleRate / rate;
-  return curLeft <= numberOfFrames;
+long Sample::getNumberOfFrames() {
+  return numberOfFrames;
 }
 
-bool Sample::getRightFrame (float* frame, long length, long rate) {
-  int limit = std::min(length, numberOfFrames - curRight);
-  for (int i = 0; i < limit; i++) {
-    frame[i] += rightData[curRight + i * sampleRate / rate] * volumeIndex;
-  }
-  curRight += length * sampleRate / rate;
-  return curRight <= numberOfFrames;
+long Sample::getSampleRate() {
+  return sampleRate;
+}
+
+float Sample::getVolumeIndex() {
+  return volumeIndex;
 }
 
 void Sample::setVolume (float volume) {
   volumeIndex = volume;
 }
 
+SingleSampleInstance::SingleSampleInstance (Sample genericSample) {
+  sample = genericSample;
+  curLeft = 0;
+  curRight = 0;
+}
+
+bool SingleSampleInstance::getLeftFrame (float* frame, long length, long rate) {
+  long noFrames = sample.getNumberOfFrames();
+  long sampleRate = sample.getSampleRate();
+  float volumeIndex = sample.getVolumeIndex();
+  int limit = std::min(length, noFrames - curLeft);
+  for (int i = 0; i < limit; i++) {
+    frame[i] += sample.leftData[curLeft + i * sampleRate / rate] * volumeIndex;
+  }
+  curLeft += length * sampleRate / rate;
+  return curLeft <= noFrames;
+}
+
+bool SingleSampleInstance::getRightFrame (float* frame, long length, long rate) {
+  long noFrames = sample.getNumberOfFrames();
+  long sampleRate = sample.getSampleRate();
+  float volumeIndex = sample.getVolumeIndex();
+  int limit = std::min(length, noFrames - curRight);
+  for (int i = 0; i < limit; i++) {
+    frame[i] += sample.rightData[curRight + i * sampleRate / rate] * volumeIndex;
+  }
+  curRight += length * sampleRate / rate;
+  return curRight <= noFrames;
+}
+
+Sample SingleSampleInstance::getSample () {
+  return sample;
+}
+
+RepeatSampleInstance::RepeatSampleInstance (Sample genericSample) {
+  sample = genericSample;
+  curLeft = 0;
+  curRight = 0;
+}
+
+bool RepeatSampleInstance::getLeftFrame (float* frame, long length, long rate) {
+  long noFrames = sample.getNumberOfFrames();
+  long sampleRate = sample.getSampleRate();
+  float volumeIndex = sample.getVolumeIndex();
+  for (long i = 0; i < length; i++) {
+    frame[i] += sample.leftData[(curLeft + i) % noFrames * sampleRate / rate] * volumeIndex;
+  }
+  curLeft = (curLeft + length * sampleRate / rate) % noFrames;
+  return true;
+}
+
+bool RepeatSampleInstance::getRightFrame (float* frame, long length, long rate) {
+  long noFrames = sample.getNumberOfFrames();
+  long sampleRate = sample.getSampleRate();
+  float volumeIndex = sample.getVolumeIndex();
+  for (long i = 0; i < length; i++) {
+    frame[i] += sample.rightData[(curRight + i) % noFrames * sampleRate / rate] * volumeIndex;
+  }
+  curRight = (curRight + length * sampleRate / rate) % noFrames;
+  return true;
+}
+
+Sample RepeatSampleInstance::getSample () {
+  return sample;
+}

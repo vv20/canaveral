@@ -5,7 +5,7 @@
 class BackEnd {
   public:
     BackEnd ();
-    void playSample (Sample* sample);
+    void playSample (SampleInstance* sample);
     void silence();
 };
 
