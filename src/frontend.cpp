@@ -31,8 +31,8 @@ FrontEnd::FrontEnd (QVector<Pad*> padvector, QWidget* parent)
   QAction* none = new QAction("&None", this);
 
   // actions of the preset menu
-  QAction* saveCur = new QAction("&Save Current");
-  QAction* load = new QAction("&Load Preset");
+  QAction* saveCur = new QAction("&Save Current", this);
+  QAction* load = new QAction("&Load Preset", this);
 
   // assemble the hotkey menu 
   hotkey->addAction(leftCluster);
@@ -76,7 +76,9 @@ FrontEnd::FrontEnd (QVector<Pad*> padvector, QWidget* parent)
   splitter2->addWidget(splitter1);
   splitter2->addWidget(volume);
 
-  QList<int> sizes({50, 100});
+  QList<int> sizes;
+  sizes.append(50);
+  sizes.append(100);
   splitter2->setSizes(sizes);
 
   setCentralWidget(splitter2);

@@ -1,6 +1,7 @@
 #include <QList>
 #include <QByteArray>
 #include <QString>
+#include <tgmath.h>
 #include "wav_parser.h"
 
 Chunk::~Chunk() {}
@@ -52,7 +53,7 @@ void ChunkStream::add (Chunk* newChunk) {
 long readLittleEndian(QByteArray array) {
   long result = 0;
   for (int i = 0; i < array.size(); i++) {
-    result += ((unsigned char) array.at(i)) * pow(2, 8 * i);
+    result += (((unsigned char) array.at(i)) * pow(2, 8 * i));
   }
   return result;
 }

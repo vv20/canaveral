@@ -10,6 +10,7 @@ OBJECTS_DIR = .obj
 MOC_DIR = .moc
 QT += widgets
 QT += core
+CONFIG += c++11
 CONFIG += link_pkgconfig
 PKGCONFIG += jack
 

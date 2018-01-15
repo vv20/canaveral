@@ -214,68 +214,37 @@ void Sample::setVolume (float volume) {
   volumeIndex = volume;
 }
 
-SingleSampleInstance::SingleSampleInstance (Sample genericSample) {
-  sample = genericSample;
-  curLeft = 0;
-  curRight = 0;
+SampleInstance::SampleInstance(Sample* genericSample) {
+	sample = genericSample;
+	curLeft = 0;
+	curRight = 0;
 }
 
-bool SingleSampleInstance::getLeftFrame (float* frame, long length, long rate) {
-  long noFrames = sample.getNumberOfFrames();
-  long sampleRate = sample.getSampleRate();
-  float volumeIndex = sample.getVolumeIndex();
+bool SampleInstance::getLeftFrame (float* frame, long length, long rate) {
+  long noFrames = sample->getNumberOfFrames();
+  long sampleRate = sample->getSampleRate();
+  float volumeIndex = sample->getVolumeIndex();
   int limit = std::min(length, noFrames - curLeft);
   for (int i = 0; i < limit; i++) {
-    frame[i] += sample.leftData[curLeft + i * sampleRate / rate] * volumeIndex;
+    frame[i] += sample->leftData[curLeft + i * sampleRate / rate] * volumeIndex;
   }
   curLeft += length * sampleRate / rate;
   return curLeft <= noFrames;
 }
 
-bool SingleSampleInstance::getRightFrame (float* frame, long length, long rate) {
-  long noFrames = sample.getNumberOfFrames();
-  long sampleRate = sample.getSampleRate();
-  float volumeIndex = sample.getVolumeIndex();
+bool SampleInstance::getRightFrame (float* frame, long length, long rate) {
+  long noFrames = sample->getNumberOfFrames();
+  long sampleRate = sample->getSampleRate();
+  float volumeIndex = sample->getVolumeIndex();
   int limit = std::min(length, noFrames - curRight);
   for (int i = 0; i < limit; i++) {
-    frame[i] += sample.rightData[curRight + i * sampleRate / rate] * volumeIndex;
+    frame[i] += sample->rightData[curRight + i * sampleRate / rate] * volumeIndex;
   }
   curRight += length * sampleRate / rate;
   return curRight <= noFrames;
 }
 
-Sample SingleSampleInstance::getSample () {
+Sample* SampleInstance::getSample () {
   return sample;
 }
 
-RepeatSampleInstance::RepeatSampleInstance (Sample genericSample) {
-  sample = genericSample;
-  curLeft = 0;
-  curRight = 0;
-}
-
-bool RepeatSampleInstance::getLeftFrame (float* frame, long length, long rate) {
-  long noFrames = sample.getNumberOfFrames();
-  long sampleRate = sample.getSampleRate();
-  float volumeIndex = sample.getVolumeIndex();
-  for (long i = 0; i < length; i++) {
-    frame[i] += sample.leftData[(curLeft + i) % noFrames * sampleRate / rate] * volumeIndex;
-  }
-  curLeft = (curLeft + length * sampleRate / rate) % noFrames;
-  return true;
-}
-
-bool RepeatSampleInstance::getRightFrame (float* frame, long length, long rate) {
-  long noFrames = sample.getNumberOfFrames();
-  long sampleRate = sample.getSampleRate();
-  float volumeIndex = sample.getVolumeIndex();
-  for (long i = 0; i < length; i++) {
-    frame[i] += sample.rightData[(curRight + i) % noFrames * sampleRate / rate] * volumeIndex;
-  }
-  curRight = (curRight + length * sampleRate / rate) % noFrames;
-  return true;
-}
-
-Sample RepeatSampleInstance::getSample () {
-  return sample;
-}

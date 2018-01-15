@@ -38,31 +38,14 @@ class Sample {
 
 class SampleInstance {
   public:
-    SampleInstance();
-    virtual ~SampleInstance();
-    virtual bool getLeftFrame(float* frame, long length, long rate);
-    virtual bool getRightFrame(float* frame, long length, long rate);
-    virtual Sample getSample();
+    SampleInstance(Sample* genericSample);
+    bool getLeftFrame(float* frame, long length, long rate);
+    bool getRightFrame(float* frame, long length, long rate);
+    Sample* getSample();
 
   protected:
-    Sample sample;
+    Sample* sample;
     long curLeft;
     long curRight;
-};
-
-class SingleSampleInstance: public SampleInstance {
-  public:
-    SingleSampleInstance (Sample genericSample);
-    bool getLeftFrame(float* frame, long length, long rate);
-    bool getRightFrame(float* frame, long length, long rate);
-    Sample getSample();
-};
-
-class RepeatSampleInstance: public SampleInstance {
-  public:
-    RepeatSampleInstance (Sample genericSample);
-    bool getLeftFrame(float* frame, long length, long rate);
-    bool getRightFrame(float* frame, long length, long rate);
-    Sample getSample();
 };
 
