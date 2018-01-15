@@ -1,17 +1,17 @@
 #include <QApplication>
 #include <QVector>
 #include "frontend.h"
-#include "backend.h"
 #include "constants.h"
 #include "pad.h"
+#include "kernel.h"
 
 int main (int argc, char** argv) {
   QApplication app(argc, argv);
-  BackEnd* be = new BackEnd();
+  init_kernel();
 
   QVector<Pad*> pads;
   for (int i = 0; i < NUMBER_OF_BUTTONS; i++) {
-    pads.append(new Pad(i, be));
+    pads.append(new Pad(i));
   }
 
   FrontEnd fe(pads);

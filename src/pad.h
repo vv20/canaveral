@@ -4,7 +4,6 @@
 #include <QSlider>
 #include <QWidget>
 #include <QByteArray>
-#include "backend.h"
 #include "sample.h"
 
 class Pad : public QObject {
@@ -12,14 +11,13 @@ class Pad : public QObject {
 
   public:
     /* ====================  LIFECYCLE     ======================================= */
-    Pad (int pos, BackEnd* backend);
+    Pad (int pos);
 
     /* ====================  ACCESSORS     ======================================= */
     QPushButton* getButton();
     QSlider* getSlider();
     QString getSample();
     QString getFilename();
-    BackEnd* getBackend();
     /* ====================  MUTATORS      ======================================= */
     void createButton(QWidget* parent);
     void createSlider(QWidget* parent);
@@ -35,6 +33,5 @@ class Pad : public QObject {
     QPushButton* button;
     QSlider* slider;
     Sample* sample;
-    BackEnd* backend;
 };
 

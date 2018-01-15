@@ -20,8 +20,6 @@ class HotkeyConfig : public QObject {
 
   private:
     QVector<QShortcut*> shortcuts;
-    BackEnd* backend;
-
     void createShortcuts(QVector<QString> triggers, QWidget* parent);
 
   private slots:

@@ -1,10 +1,10 @@
 #include <QKeySequence>
 #include "hotkey_config.h"
 #include "constants.h"
+#include "kernel.h"
 
 HotkeyConfig::HotkeyConfig (QVector<Pad*> pads, QWidget* parent,
     HotkeyConfig::Preset preset) : QObject() {
-  backend = pads.at(0)->getBackend();
 
   switch (preset) {
     case NO_PRESET:
@@ -78,5 +78,5 @@ void HotkeyConfig::createShortcuts (QVector<QString> triggers, QWidget* parent) 
 }
 
 void HotkeyConfig::silence() {
-  backend->silence();
+  panic();
 }

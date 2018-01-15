@@ -15,8 +15,7 @@ CONFIG += link_pkgconfig
 PKGCONFIG += jack
 
 # Input
-HEADERS += src/backend.h \
-           src/buttons_tab.h \
+HEADERS += src/buttons_tab.h \
            src/constants.h \
            src/frontend.h \
            src/pad.h \
@@ -26,9 +25,9 @@ HEADERS += src/backend.h \
            src/sample.h \
            src/wav_parser.h \
            src/hotkey_config.h \
-           src/preset_window.h
-SOURCES += src/backend.cpp \
-           src/buttons_tab.cpp \
+           src/preset_window.h \
+           src/kernel.h
+SOURCES += src/buttons_tab.cpp \
            src/frontend.cpp \
            src/main.cpp \
            src/pad.cpp \
@@ -38,4 +37,5 @@ SOURCES += src/backend.cpp \
            src/sample.cpp \
            src/wav_parser.cpp \
            src/hotkey_config.cpp \
-           src/preset_window.cpp
+           src/preset_window.cpp \
+           src/kernel.cpp

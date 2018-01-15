@@ -4,10 +4,9 @@
 #include "buttons_tab.h"
 #include "constants.h"
 #include "pad.h"
+#include "kernel.h"
 
 ButtonsTab::ButtonsTab (QVector<Pad*> pads, QWidget* parent) : QWidget(parent) {
-  backend = pads.at(0)->getBackend();
-
   QGridLayout* grid = new QGridLayout(this);
 
   for (int i = 0; i < NUMBER_OF_BUTTON_COLUMNS; i++) {
@@ -28,5 +27,5 @@ ButtonsTab::ButtonsTab (QVector<Pad*> pads, QWidget* parent) : QWidget(parent) {
 }
 
 void ButtonsTab::silence() {
-  backend->silence();
+    panic();
 }

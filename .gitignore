@@ -4,3 +4,4 @@ bin/*
 .qmake.stash
 *.swp
 Makefile
+compile_commands.json

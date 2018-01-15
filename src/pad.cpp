@@ -3,10 +3,10 @@
 #include <QTextStream>
 #include "pad.h"
 #include "constants.h"
+#include "kernel.h"
 
-Pad::Pad (int pos, BackEnd* back) {
+Pad::Pad (int pos) {
   position = pos;
-  backend = back;
   sample = new Sample("");
 }
 
@@ -24,10 +24,6 @@ QString Pad::getSample () {
 
 QString Pad::getFilename () {
   return sample->getFilename();
-}
-
-BackEnd* Pad::getBackend() {
-  return backend;
 }
 
 void Pad::createButton (QWidget* parent) {
@@ -62,7 +58,7 @@ void Pad::ejectSample () {
 
 void Pad::play () {
   if (sample->getFilename() != "---") {
-    backend->playSample(new SampleInstance(sample));
+      playSample(this->position);
   }
 }
 
