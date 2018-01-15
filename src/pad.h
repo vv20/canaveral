@@ -32,6 +32,5 @@ class Pad : public QObject {
     int position;
     QPushButton* button;
     QSlider* slider;
-    Sample* sample;
 };
 

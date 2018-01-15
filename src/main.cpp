@@ -6,20 +6,21 @@
 #include "kernel.h"
 
 int main (int argc, char** argv) {
-  QApplication app(argc, argv);
-  init_kernel();
+    QTextStream out(stdout);
+    QApplication app(argc, argv);
+    init_kernel();
 
-  QVector<Pad*> pads;
-  for (int i = 0; i < NUMBER_OF_BUTTONS; i++) {
-    pads.append(new Pad(i));
-  }
+    QVector<Pad*> pads;
+    for (int i = 0; i < NUMBER_OF_BUTTONS; i++) {
+        pads.append(new Pad(i));
+    }
 
-  FrontEnd fe(pads);
+    FrontEnd fe(pads);
 
-  fe.setWindowTitle(APP_WINDOW_TITLE);
-  fe.resize(APP_WIDTH, APP_HEIGHT);
-  fe.move(APP_X_POS, APP_Y_POS);
-  fe.show();
+    fe.setWindowTitle(APP_WINDOW_TITLE);
+    fe.resize(APP_WIDTH, APP_HEIGHT);
+    fe.move(APP_X_POS, APP_Y_POS);
+    fe.show();
 
-  return app.exec();
+    return app.exec();
 }

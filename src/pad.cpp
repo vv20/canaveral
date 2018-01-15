@@ -7,7 +7,6 @@
 
 Pad::Pad (int pos) {
   position = pos;
-  sample = new Sample("");
 }
 
 QPushButton* Pad::getButton () {
@@ -19,11 +18,11 @@ QSlider* Pad::getSlider () {
 }
 
 QString Pad::getSample () {
-  return sample->getSamplename();
+    return get_sample_name(this->position);
 }
 
 QString Pad::getFilename () {
-  return sample->getFilename();
+    return get_sample_file_name(this->position);
 }
 
 void Pad::createButton (QWidget* parent) {
@@ -38,27 +37,20 @@ void Pad::createSlider (QWidget* parent) {
 }
 
 void Pad::setVolume (int volume) {
-  sample->setVolume((float) volume / (100 / VOLUME_TICKS));
+    set_volume(this->position, volume);
 }
 
 void Pad::loadSample (QString filename) {
-  QTextStream out(stdout);
-  delete sample; 
-  sample = new Sample(filename);
+    load_sample(this->position, filename);
 }
 
 void Pad::ejectSample () {
-  if (sample->getSamplename() != "---") {
-    free(sample->leftData);
-    free(sample->rightData);
-  }
-  delete sample;
-  sample = new Sample("");
+    eject_sample(this->position);
 }
 
 void Pad::play () {
-  if (sample->getFilename() != "---") {
-      playSample(this->position);
+  if (this->getFilename() != "---") {
+      play_sample(this->position);
   }
 }
 

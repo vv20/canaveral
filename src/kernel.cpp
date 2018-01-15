@@ -1,4 +1,5 @@
 #include "kernel.h"
+#include "constants.h"
 
 int process(jack_nframes_t nframes, void* arg) {
     // retrieve the buffers
@@ -75,6 +76,11 @@ void init_kernel() {
     jack_client_t* client;
     jack_status_t status;
 
+    // initialise the sample list to all empty samples
+    for (int i = 0; i < NUMBER_OF_BUTTONS; i++) {
+        samples.insert(i, new Sample(""));
+    }
+
     // open a jack client
     client = jack_client_open(client_name, JackNullOption, &status, NULL);
     if (client == NULL) {
@@ -120,20 +126,29 @@ void init_kernel() {
         out << "could not connect right port" << endl;
 }
 
-void loadSample(int no, QString filename) {
-    // TODO: implement
+void load_sample(int no, QString filename) {
+    delete samples.at(no);
+    samples.replace(no, new Sample(filename));
 }
 
-void ejectSample(int no) {
-    // TODO: implement
+void eject_sample(int no) {
+    load_sample(no, "");
 }
 
-void playSample(int no) {
+void play_sample(int no) {
     activeSamples.append(new SampleInstance(samples.at(no)));
 }
 
-void setVolume(int no, int volume) {
+void set_volume(int no, int volume) {
     samples.at(no)->setVolume((float) volume / (100 / VOLUME_TICKS));
+}
+
+QString get_sample_name(int no) {
+    return samples.at(no)->getSamplename();
+}
+
+QString get_sample_file_name(int no) {
+    return samples.at(no)->getFilename();
 }
 
 void panic() {
