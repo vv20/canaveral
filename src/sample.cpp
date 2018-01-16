@@ -3,42 +3,36 @@
 #include <QTextStream>
 #include <QFile>
 #include <math.h>
+#include <sndfile.hh>
 #include "sample.h"
-#include "wav_parser.h"
 
 typedef union {
   char array[4];
   float ieee;
 } float_converter;
 
-/**
- * Deletes the contents of a chunk stream.
- */
-void clearStream(ChunkStream* stream) {
-  Chunk* chunk;
-  while ((chunk = stream->next()) != NULL) {
-    delete chunk;
+Sample::Sample(QString file) {
+  if (file == "") {
+    filename = "---";
+    samplename = "---";
+    return;
   }
-}
 
-/**
- * Converts an array of bytes into a float.
- */
-float readIEEEFloat(QByteArray array) {
-  float_converter conv;
-  for (int i = 0; i < array.size(); i++) {
-    conv.array[i] = array.at(i);
-  }
-  return conv.ieee;
-}
+  this->filename = file;
+  this->volumeIndex = 0;
 
-int readPCM(QByteArray array) {
-  // the first byte is offset binary, not two's complement
-  int result = -pow(2, 7) - 1 + (unsigned char) array.at(0);
-  for (int i = 1; i < array.size(); i++) {
-    result += array.at(i) * pow(2, 8 * i);
-  }
-  return result;
+  QVector<QStringRef> split = file.splitRef("/");
+  samplename = split.last().toString();
+
+  SndfileHandle handle = SndfileHandle(file.toStdString());
+
+  this->noOfChannels = handle.channels();
+  this->sampleRate = handle.samplerate();
+  this->numberOfFrames = handle.frames();
+  this->leftData = (float*) malloc(sizeof(float) * this->numberOfFrames);
+  this->rightData = (float*) malloc(sizeof(float) * this->numberOfFrames);
+
+  file.read()
 }
 
 Sample::Sample (QString file) {

@@ -7,8 +7,7 @@
 
 class Sample {
   public:
-    float* leftData;
-    float* rightData;
+    float* data;
     /* ====================  LIFECYCLE     ======================================= */
     Sample (QString filename);
 
@@ -26,26 +25,21 @@ class Sample {
   private:
     QString filename;
     QString samplename;
-    long numberOfFrames;
-
     float volumeIndex;
     
+    long numberOfFrames;
     int noOfChannels;
     long sampleRate;
-    int bitsPerSample;
-    int format;
 };
 
 class SampleInstance {
   public:
     SampleInstance(Sample* genericSample);
-    bool getLeftFrame(float* frame, long length, long rate);
-    bool getRightFrame(float* frame, long length, long rate);
+    bool getFrame(float* frame, long length, long rate);
     Sample* getSample();
 
   protected:
     Sample* sample;
-    long curLeft;
-    long curRight;
+    long position;
 };
 

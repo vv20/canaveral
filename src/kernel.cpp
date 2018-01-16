@@ -3,21 +3,18 @@
 
 int process(jack_nframes_t nframes, void* arg) {
     // retrieve the buffers
-    sample_t* left_buffer = (sample_t*) jack_port_get_buffer(left_out, nframes);
-    sample_t* right_buffer = (sample_t*) jack_port_get_buffer(right_out, nframes);
+    sample_t* buffer = (sample_t*) jack_port_get_buffer(out_port, nframes);
     void* midi_buffer = jack_port_get_buffer(midi_in, nframes);
 
     // clear the buffers in case there was noise in them
     for (unsigned int i = 0; i < nframes; i++) {
-        left_buffer[i] = 0;
-        right_buffer[i] = 0;
+        buffer[i] = 0;
     }
 
     // let each sample instance imprint its next frame onto the buffers
     for (int i = 0; i < activeSamples.size(); i++) {
         // if the instance has reached the end, delete it
-        if (!activeSamples.at(i)->getLeftFrame(left_buffer, nframes, samplerate) ||
-                !activeSamples.at(i)->getRightFrame(right_buffer, nframes, samplerate)) {
+        if (!activeSamples.at(i)->getFrame(buffer, nframes, samplerate)) {
             delete activeSamples.at(i);
             activeSamples.removeAt(i);
         }
@@ -44,7 +41,7 @@ int process(jack_nframes_t nframes, void* arg) {
                         SampleInstance* instance = new SampleInstance(samples.at(sample_no));
                         // start playing the sample from the time given in the event and then just add it
                         // to the playing samples
-                        instance->getLeftFrame(&left_buffer[midi_event.time], nframes - midi_event.time, samplerate);
+                        instance->getFrame(&buffer[midi_event.time], nframes - midi_event.time, samplerate);
                         activeSamples.append(new SampleInstance(samples.at(sample_no)));
                         break;
                     }
@@ -125,14 +122,10 @@ void init_kernel() {
     out << "sample rate: " << QString::number(samplerate) << endl;
 
     // register ports
-    left_out = jack_port_register(client, "left", JACK_DEFAULT_AUDIO_TYPE, 
-            JackPortIsOutput, 0);
-    right_out = jack_port_register(client, "right", JACK_DEFAULT_AUDIO_TYPE, 
-            JackPortIsOutput, 0);
-    midi_in = jack_port_register(client, "input", JACK_DEFAULT_MIDI_TYPE,
-            JackPortIsInput, 0);
+    out_port = jack_port_register(client, "out", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
+    midi_in = jack_port_register(client, "input", JACK_DEFAULT_MIDI_TYPE, JackPortIsInput, 0);
 
-    if (left_out == NULL || right_out == NULL || midi_in == NULL) {
+    if (out_port == NULL || midi_in == NULL) {
         out << "no more JACK ports available" << endl;
         exit(1);
     }
@@ -146,10 +139,8 @@ void init_kernel() {
     // try to connect to system ports
     const char** ports = jack_get_ports(client, NULL, NULL, JackPortIsPhysical|JackPortIsInput);
     if (ports == NULL) out << "no physical ports found" << endl;
-    if (jack_connect(client, jack_port_name(left_out), ports[0])) 
+    if (jack_connect(client, jack_port_name(out_port), ports[0])) 
         out << "could not connect left port" << endl;
-    if (jack_connect(client, jack_port_name(right_out), ports[1]))
-        out << "could not connect right port" << endl;
 }
 
 void load_sample(int no, QString filename) {
