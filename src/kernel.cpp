@@ -7,38 +7,6 @@ int process(jack_nframes_t nframes, void* arg) {
     sample_t* right_buffer = (sample_t*) jack_port_get_buffer(right_out, nframes);
     void* midi_buffer = jack_port_get_buffer(midi_in, nframes);
 
-    // respond to midi events
-    jack_nframes_t no_midi_events = jack_midi_get_event_count(midi_buffer);
-    jack_midi_event_t midi_event;
-    for (unsigned int i = 0; i < no_midi_events; i++) {
-        // break if couldn't get the event
-        if (jack_midi_event_get(&midi_event, midi_buffer, i)) break;
-        int message_code = (midi_event.buffer[0] & 0xf0) << 4;
-        switch (message_code) {
-            // note on
-            case 8: {
-                        if (midi_event.size != 3) break; // corrupt event, shouldnt happen
-                        int sample_no = midi_event.buffer[1];
-                        // TODO: finish this
-                        break;
-                    }
-            // note off
-            case 9: {
-                        break;
-                        // TODO: implement
-                    }
-            // channel mode message
-            case 11: {
-                         break;
-                         //TODO: implement
-                     }
-            default: {
-                         // unsupported command
-                         break;
-                     }
-        }
-    }
-
     // clear the buffers in case there was noise in them
     for (unsigned int i = 0; i < nframes; i++) {
         left_buffer[i] = 0;
@@ -54,6 +22,64 @@ int process(jack_nframes_t nframes, void* arg) {
             activeSamples.removeAt(i);
         }
     }
+
+    // respond to midi events
+    jack_nframes_t no_midi_events = jack_midi_get_event_count(midi_buffer);
+    jack_midi_event_t midi_event;
+    for (unsigned int i = 0; i < no_midi_events; i++) {
+        // break if couldn't get the event
+        if (jack_midi_event_get(&midi_event, midi_buffer, i)) break;
+        int message_code = (midi_event.buffer[0] & 0xf0) >> 4;
+        switch (message_code) {
+            // note on
+            case 8: {
+                        if (midi_event.size != 3) break; // corrupt event, shouldnt happen
+                        if (midi_event.time > nframes) break; // also shouldn't happen
+                        // samples start from C2 (which is MIDI note number 36) because i have 
+                        // so declared
+                        int sample_no = midi_event.buffer[1] - 36;
+                        // ignore notes out of bounds
+                        if (sample_no < 0 || sample_no > NUMBER_OF_BUTTONS) continue;
+
+                        SampleInstance* instance = new SampleInstance(samples.at(sample_no));
+                        // start playing the sample from the time given in the event and then just add it
+                        // to the playing samples
+                        instance->getLeftFrame(&left_buffer[midi_event.time], nframes - midi_event.time, samplerate);
+                        activeSamples.append(new SampleInstance(samples.at(sample_no)));
+                        break;
+                    }
+            // note off
+            case 9: {
+                        if (midi_event.size != 3) break;
+                        if (midi_event.time > nframes) break;
+                        int sample_no = midi_event.buffer[1] - 36;
+                        if (sample_no < 0 || sample_no > NUMBER_OF_BUTTONS) continue;
+
+                        QString name = samples.at(sample_no)->getFilename();
+                        for (int j = 0; j < activeSamples.size(); j++) {
+                            if (!QString::compare(activeSamples.at(i)->getSample()->getFilename(), name, Qt::CaseSensitive)) {
+                                delete activeSamples.at(i);
+                                activeSamples.removeAt(i);
+                            }
+                        }
+                        break;
+                    }
+            // channel mode message
+            case 11: {
+                         if (midi_event.size != 3) break;
+                         if (midi_event.buffer[1] == 123 && midi_event.buffer[2] == 0) {
+                             panic();
+                         }
+                         break;
+                         //TODO: implement
+                     }
+            default: {
+                         // unsupported command
+                         break;
+                     }
+        }
+    }
+
     return 0;
 }
 
