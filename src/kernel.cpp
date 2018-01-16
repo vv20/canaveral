@@ -1,6 +1,12 @@
 #include "kernel.h"
 #include "constants.h"
 
+static QVector<Sample*> samples(NUMBER_OF_BUTTONS);
+static jack_port_t* out_port;
+static jack_port_t* midi_in;
+static jack_nframes_t samplerate;
+static QList<SampleInstance*> activeSamples;
+
 int process(jack_nframes_t nframes, void* arg) {
     // retrieve the buffers
     sample_t* buffer = (sample_t*) jack_port_get_buffer(out_port, nframes);

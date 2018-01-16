@@ -13,6 +13,7 @@ QT += core
 CONFIG += c++11
 CONFIG += link_pkgconfig
 PKGCONFIG += jack
+PKGCONFIG += sndfile
 
 # Input
 HEADERS += src/buttons_tab.h \
@@ -23,7 +24,6 @@ HEADERS += src/buttons_tab.h \
            src/volume_tab.h \
            src/select_window.h \
            src/sample.h \
-           src/wav_parser.h \
            src/hotkey_config.h \
            src/preset_window.h \
            src/kernel.h
@@ -35,7 +35,6 @@ SOURCES += src/buttons_tab.cpp \
            src/volume_tab.cpp \
            src/select_window.cpp \
            src/sample.cpp \
-           src/wav_parser.cpp \
            src/hotkey_config.cpp \
            src/preset_window.cpp \
            src/kernel.cpp

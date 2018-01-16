@@ -11,12 +11,6 @@
 
 typedef float sample_t;
 
-static QVector<Sample*> samples(NUMBER_OF_BUTTONS);
-static jack_port_t* out_port;
-static jack_port_t* midi_in;
-static jack_nframes_t samplerate;
-static QList<SampleInstance*> activeSamples;
-
 void init_kernel();
 void load_sample(int no, QString filename);
 void eject_sample(int no);
