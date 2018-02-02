@@ -29,9 +29,14 @@ Sample::Sample(QString file) {
   this->noOfChannels = handle.channels();
   this->sampleRate = handle.samplerate();
   this->numberOfFrames = handle.frames();
-  this->data = (float*) malloc(sizeof(float) * this->numberOfFrames);
+  this->data = (float*) malloc(sizeof(float) * numberOfFrames);
 
-  handle.read(this->data, numberOfFrames);
+  float* interm_data = (float*) malloc(sizeof(float) * numberOfFrames * noOfChannels);
+  handle.readf(interm_data, numberOfFrames * noOfChannels);
+  for (int i = 0; i < numberOfFrames; i++) {
+      this->data[i] = interm_data[i * noOfChannels];
+  }
+  free(interm_data);
 }
 
 QString Sample::getFilename () {
@@ -54,6 +59,10 @@ float Sample::getVolumeIndex() {
   return volumeIndex;
 }
 
+int Sample::getNoOfChannels() {
+    return noOfChannels;
+}
+
 void Sample::setVolume (float volume) {
   volumeIndex = volume;
 }
@@ -69,7 +78,7 @@ bool SampleInstance::getFrame (float* frame, long length, long rate) {
   float volumeIndex = sample->getVolumeIndex();
   int limit = std::min(length, noFrames - position);
   for (int i = 0; i < limit; i++) {
-    frame[i] += sample->data[position + i * sampleRate / rate] * volumeIndex;
+      frame[i] += sample->data[position + i * sampleRate / rate] * volumeIndex;
   }
   position += length * sampleRate / rate;
   return position <= noFrames;

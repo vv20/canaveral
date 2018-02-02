@@ -18,6 +18,7 @@ class Sample {
     long getNumberOfFrames();
     long getSampleRate();
     float getVolumeIndex();
+    int getNoOfChannels();
     
     /* ====================  MUTATORS     ======================================= */
     void setVolume(float volume);
